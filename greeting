@@ -19,7 +19,7 @@ if [ $# -eq 0 ]; then
   esac
 fi
 
-exec awk -v seed="$seed" -v hour="$hour" '
+exec awk -v seed="$seed" -v hour="$hour" -v name="${GREETING_NAME:-${USER:-$(id -un)}}" '
 BEGIN {
   srand(seed)
   WIDTH = 50
@@ -39,6 +39,7 @@ END {
   if (hour >= 1 && hour < 5) quote = nudge()
   n = split(quote, lines, "\n")
   for (i = 1; i <= n; i++) wrap(lines[i])
+  paint(greeting())
   bubble()
   graphic(graphics[int(rand() * ngraphics) + 1])
   if (shiny) paint("      * shiny! *")
@@ -55,6 +56,15 @@ function nudge() {
     "Nothing good gets committed after 2 a.m.|" \
     "Sleep is the best debugger.|" \
     "Future you has to review this code. Get some sleep.") "\n    -- your terminal"
+}
+
+function greeting(    s, i) {
+  if (hour >= 5 && hour < 12) s = pick("Good morning, @!|Morning, @. Coffee first.|Rise and shine, @!")
+  else if (hour >= 12 && hour < 17) s = pick("Good afternoon, @!|Afternoon, @. Halfway there.|Hey @, hope the day is going well.")
+  else if (hour >= 17 && hour < 22) s = pick("Good evening, @!|Evening, @. Wrapping up?|Hi @, nice work today.")
+  else s = pick("Working late, @?|Hello, night owl @.|Burning the midnight oil, @?")
+  i = index(s, "@")
+  return substr(s, 1, i - 1) name substr(s, i + 1)
 }
 
 # Same as `fold -s`: break at the last space that fits, or mid-word if there is none

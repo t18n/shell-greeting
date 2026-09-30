@@ -38,6 +38,7 @@ I ended up with this repo. Installing it is one `git clone` and one line in your
 - About 1 greeting in 50 is a rare shiny one, painted in solid gold.
 - Holiday characters: only spooky ones appear from October 25 to 31, and Santa, the snowman and the elf from December 20 to 26.
 - Open a terminal between 1 and 5 a.m. and you get a nudge to go to bed instead of a quote.
+- A greeting that fits the time of day ("Good morning", "Evening, wrapping up?", "Working late?"), using your login name.
 - Graphics are plain text files, so you can draw your own in any editor.
 - About 10 ms per run, so your shell doesn't start noticeably slower.
 
@@ -136,6 +137,14 @@ Two skills add quotes and graphics following the rules above, check their work, 
 ```
 
 Other agents, such as Codex or Cursor, read `AGENTS.md`, which points them to the same skill files in `.claude/skills/`.
+
+### Your name
+
+The greeting uses your login name. To use a different one, set `GREETING_NAME` in your shell's startup file, before the line that runs the greeting:
+
+```sh
+export GREETING_NAME="Sam"
+```
 
 ### Colors
 
