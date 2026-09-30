@@ -6,27 +6,6 @@ Show a random quote, spoken by a random ASCII animal in rainbow colors, every ti
 
 It does the same job as `fortune | cowsay | lolcat` in one small script, without installing any of them. It only needs POSIX `sh` and `awk`, so it works the same in zsh, bash, fish, dash and ksh, on macOS, Linux, BSD and WSL.
 
-## Why I made this
-
-I wanted every new terminal to greet me with a quote and a cow I picked, and I wanted it simple to install and easy to manage.
-
-My first solution was `fortune | cowsay | lolcat` in my `.zshrc`, with a random cow from the [cowfiles](https://github.com/bkendzior/cowfiles) collection. It worked, but it meant installing three packages, and adding my own quote meant editing a fortune file and rebuilding its index with `strfile`.
-
-I ended up with this repo. Installing it is one `git clone` and one line in your shell's startup file. The quotes are a plain text file and the cows are a folder, so managing them is just editing files. It only needs `sh` and `awk`, so it runs in any shell.
-
-## Features
-
-- 86 curated quotes about programming, science and philosophy.
-- 13 animals and objects, including a rubber duck, an owl, a robot and a coffee mug.
-- A lolcat-style rainbow. It uses 24-bit color when your terminal supports it and 256 colors otherwise.
-- Cows are plain text files, so you can draw your own in any editor.
-- About 10 ms per run, so your shell doesn't start noticeably slower.
-
-## Requirements
-
-- A POSIX `sh`, `awk` and `od`. These are already on macOS, Linux, BSD and WSL.
-- A terminal with 256-color or 24-bit color support.
-
 ## Installation
 
 Clone the repository wherever you keep tools. This README uses `~/.local/share/shell-greeting`:
@@ -42,6 +21,27 @@ Try it:
 ```
 
 Leave the folder together: the script looks for `quotes.txt` and `cows/` next to itself. To run it from somewhere else, call it by its full path or make an alias (see below). A symlink won't work, because the script would look for `quotes.txt` and `cows/` in the symlink's folder instead.
+
+## Why I made this
+
+I wanted every new terminal to greet me with a quote and a cow I picked, and I wanted it simple to install and easy to manage.
+
+My first solution was `fortune | cowsay | lolcat` in my `.zshrc`, with a random cow from the [cowfiles](https://github.com/bkendzior/cowfiles) collection. It worked, but it meant installing three packages, and adding my own quote meant editing a fortune file and rebuilding its index with `strfile`.
+
+I ended up with this repo. Installing it is one `git clone` and one line in your shell's startup file. The quotes are a plain text file and the cows are a folder, so managing them is just editing files. It only needs `sh` and `awk`, so it runs in any shell.
+
+## Features
+
+- 186 curated quotes about programming, innovation, business, startups, science and philosophy.
+- 13 animals and objects, including a rubber duck, an owl, a robot and a coffee mug.
+- A lolcat-style rainbow. It uses 24-bit color when your terminal supports it and 256 colors otherwise.
+- Cows are plain text files, so you can draw your own in any editor.
+- About 10 ms per run, so your shell doesn't start noticeably slower.
+
+## Requirements
+
+- A POSIX `sh`, `awk` and `od`. These are already on macOS, Linux, BSD and WSL.
+- A terminal with 256-color or 24-bit color support.
 
 ## Show it when your shell starts
 

@@ -255,3 +255,303 @@ Rest is not idleness.
 %
 So many books, so little time.
     -- Frank Zappa
+%
+Code is read much more often than it is written.
+    -- Guido van Rossum
+%
+Readability counts.
+    -- Tim Peters, The Zen of Python
+%
+Errors should never pass silently. Unless explicitly silenced.
+    -- Tim Peters, The Zen of Python
+%
+Bad programmers worry about the code. Good programmers worry about data structures and their relationships.
+    -- Linus Torvalds
+%
+Nobody should start to undertake a large project. You start with a small trivial project, and you should never expect it to get large.
+    -- Linus Torvalds
+%
+Show me your flowcharts and conceal your tables, and I shall continue to be mystified. Show me your tables, and I won't usually need your flowcharts; they'll be obvious.
+    -- Fred Brooks
+%
+Plan to throw one away; you will, anyhow.
+    -- Fred Brooks
+%
+The bearing of a child takes nine months, no matter how many women are assigned.
+    -- Fred Brooks
+%
+Release early. Release often. And listen to your customers.
+    -- Eric S. Raymond
+%
+Smart data structures and dumb code works a lot better than the other way around.
+    -- Eric S. Raymond
+%
+Write programs that do one thing and do it well. Write programs to work together.
+    -- Doug McIlroy
+%
+The most effective debugging tool is still careful thought, coupled with judiciously placed print statements.
+    -- Brian Kernighan
+%
+Don't comment bad code - rewrite it.
+    -- Brian Kernighan and P. J. Plauger
+%
+Measure. Don't tune for speed until you've measured.
+    -- Rob Pike
+%
+Data dominates. If you've chosen the right data structures and organized things well, the algorithms will almost always be self-evident.
+    -- Rob Pike
+%
+Fancy algorithms are slow when n is small, and n is usually small.
+    -- Rob Pike
+%
+Clear is better than clever.
+    -- Rob Pike, Go Proverbs
+%
+All non-trivial abstractions, to some degree, are leaky.
+    -- Joel Spolsky
+%
+Always implement things when you actually need them, never when you just foresee that you need them.
+    -- Ron Jeffries
+%
+Do the simplest thing that could possibly work.
+    -- Ward Cunningham
+%
+To me, legacy code is simply code without tests.
+    -- Michael Feathers
+%
+If it hurts, do it more often.
+    -- Martin Fowler
+%
+For each desired change, make the change easy (warning: this may be hard), then make the easy change.
+    -- Kent Beck
+%
+The function of good software is to make the complex appear to be simple.
+    -- Grady Booch
+%
+I call it my billion-dollar mistake. It was the invention of the null reference in 1965.
+    -- Tony Hoare
+%
+The question of whether a computer can think is no more interesting than the question of whether a submarine can swim.
+    -- Edsger W. Dijkstra
+%
+Science is what we understand well enough to explain to a computer. Art is everything else we do.
+    -- Donald Knuth
+%
+Programming is the art of telling another human being what one wants the computer to do.
+    -- Donald Knuth
+%
+Software is getting slower more rapidly than hardware becomes faster.
+    -- Niklaus Wirth
+%
+There are only two kinds of languages: the ones people complain about and the ones nobody uses.
+    -- Bjarne Stroustrup
+%
+C makes it easy to shoot yourself in the foot; C++ makes it harder, but when you do it blows your whole leg off.
+    -- Bjarne Stroustrup
+%
+Always code as if the guy who ends up maintaining your code will be a violent psychopath who knows where you live.
+    -- John Woods
+%
+The best performance improvement is the transition from the nonworking state to the working state.
+    -- John Ousterhout
+%
+Any application that can be written in JavaScript, will eventually be written in JavaScript.
+    -- Jeff Atwood
+%
+The only valid measurement of code quality: WTFs/minute.
+    -- Thom Holwerda
+%
+We will encourage you to develop the three great virtues of a programmer: laziness, impatience, and hubris.
+    -- Larry Wall
+%
+Documentation is a love letter that you write to your future self.
+    -- Damian Conway
+%
+Good code is its own best documentation.
+    -- Steve McConnell
+%
+Some people, when confronted with a problem, think 'I know, I'll use regular expressions.' Now they have two problems.
+    -- Jamie Zawinski
+%
+Every program attempts to expand until it can read mail.
+    -- Jamie Zawinski
+%
+Organizations which design systems are constrained to produce designs which are copies of the communication structures of these organizations.
+    -- Melvin Conway
+%
+All problems in computer science can be solved by another level of indirection.
+    -- David Wheeler
+%
+The first 90 percent of the code accounts for the first 90 percent of the development time. The remaining 10 percent of the code accounts for the other 90 percent of the development time.
+    -- Tom Cargill
+%
+I think everybody in this country should learn how to program a computer, because it teaches you how to think.
+    -- Steve Jobs
+%
+Learning to write programs stretches your mind, and helps you think better.
+    -- Bill Gates
+%
+Innovation is the specific instrument of entrepreneurship.
+    -- Peter Drucker
+%
+Innovation distinguishes between a leader and a follower.
+    -- attributed to Steve Jobs
+%
+Design is not just what it looks like and feels like. Design is how it works.
+    -- Steve Jobs
+%
+It's really hard to design products by focus groups. A lot of times, people don't know what they want until you show it to them.
+    -- Steve Jobs
+%
+Innovation comes from people meeting up in the hallways or calling each other at 10:30 at night with a new idea.
+    -- Steve Jobs
+%
+If I had asked people what they wanted, they would have said faster horses.
+    -- attributed to Henry Ford
+%
+The best way to have a good idea is to have lots of ideas.
+    -- Linus Pauling
+%
+Creativity is thinking up new things. Innovation is doing new things.
+    -- attributed to Theodore Levitt
+%
+Chance favors only the prepared mind.
+    -- Louis Pasteur
+%
+Genius is one percent inspiration and ninety-nine percent perspiration.
+    -- Thomas Edison
+%
+Imagination is more important than knowledge.
+    -- Albert Einstein
+%
+Every once in a while, a new technology, an old problem, and a big idea turn into an innovation.
+    -- attributed to Dean Kamen
+%
+The Web as I envisaged it, we have not seen it yet. The future is still so much bigger than the past.
+    -- Tim Berners-Lee
+%
+Failure is an option here. If things are not failing, you are not innovating enough.
+    -- Elon Musk
+%
+If you double the number of experiments you do per year you're going to double your inventiveness.
+    -- Jeff Bezos
+%
+If you set your goals ridiculously high and it's a failure, you will fail above everyone else's success.
+    -- James Cameron
+%
+Have a healthy disregard for the impossible.
+    -- Larry Page
+%
+We always overestimate the change that will occur in the next two years and underestimate the change that will occur in the next ten.
+    -- Bill Gates
+%
+There is no reason anyone would want a computer in their home.
+    -- Ken Olsen, 1977
+%
+Software is eating the world.
+    -- Marc Andreessen
+%
+The purpose of business is to create and keep a customer.
+    -- Peter Drucker
+%
+There is surely nothing quite so useless as doing with great efficiency what should not be done at all.
+    -- Peter Drucker
+%
+Efficiency is doing things right; effectiveness is doing the right things.
+    -- Peter Drucker
+%
+Price is what you pay. Value is what you get.
+    -- Warren Buffett
+%
+It takes 20 years to build a reputation and five minutes to ruin it.
+    -- Warren Buffett
+%
+Risk comes from not knowing what you're doing.
+    -- Warren Buffett
+%
+Your most unhappy customers are your greatest source of learning.
+    -- Bill Gates
+%
+Success is a lousy teacher. It seduces smart people into thinking they can't lose.
+    -- Bill Gates
+%
+Your margin is my opportunity.
+    -- Jeff Bezos
+%
+We are stubborn on vision. We are flexible on details.
+    -- Jeff Bezos
+%
+If you're competitor-focused, you have to wait until there is a competitor doing something. Being customer-focused allows you to be more pioneering.
+    -- Jeff Bezos
+%
+People don't want to buy a quarter-inch drill. They want a quarter-inch hole!
+    -- attributed to Theodore Levitt
+%
+People don't buy what you do; they buy why you do it.
+    -- Simon Sinek
+%
+The competitor to be feared is one who never bothers about you at all, but goes on making his own business better all the time.
+    -- Henry Ford
+%
+Failure is simply the opportunity to begin again, this time more intelligently.
+    -- Henry Ford
+%
+Quality is more important than quantity. One home run is much better than two doubles.
+    -- Steve Jobs
+%
+Make every detail perfect and limit the number of details to perfect.
+    -- Jack Dorsey
+%
+The only way to win is to learn faster than anyone else.
+    -- Eric Ries
+%
+A startup is a human institution designed to create a new product or service under conditions of extreme uncertainty.
+    -- Eric Ries
+%
+No business plan survives first contact with customers.
+    -- Steve Blank
+%
+A startup is a temporary organization designed to search for a repeatable and scalable business model.
+    -- Steve Blank
+%
+A startup is a company designed to grow fast.
+    -- Paul Graham
+%
+Live in the future, then build what's missing.
+    -- Paul Graham
+%
+It's better to have 100 people that love you than a million people that just sort of like you.
+    -- attributed to Paul Graham
+%
+Startups rarely die in mid keystroke. So keep typing!
+    -- Paul Graham
+%
+The way to get startup ideas is not to try to think of startup ideas.
+    -- Paul Graham
+%
+Competition is for losers.
+    -- Peter Thiel
+%
+Brilliant thinking is rare, but courage is in even shorter supply than genius.
+    -- Peter Thiel
+%
+Great execution is at least 10 times more important and 100 times harder than a great idea.
+    -- Sam Altman
+%
+In a startup, absolutely nothing happens unless you make it happen.
+    -- Marc Andreessen
+%
+The only thing that matters is getting to product/market fit.
+    -- Marc Andreessen
+%
+Starting a company is like jumping off a cliff and assembling a plane on the way down.
+    -- attributed to Reid Hoffman
+%
+Move fast and break things.
+    -- Mark Zuckerberg
+%
+Don't worry, be crappy.
+    -- Guy Kawasaki
+%
+Fall in love with the problem, not the solution.
+    -- Uri Levine
