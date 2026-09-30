@@ -1,0 +1,103 @@
+#!/bin/sh
+# Random quote from quotes.txt spoken by a random cow from cows/, in rainbow colors.
+# Only POSIX sh and awk, so any shell on macOS, Linux, BSD or WSL can run it.
+
+dir=$(cd "$(dirname "$0")" && pwd)
+seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
+
+exec awk -v seed="$seed" '
+BEGIN {
+  srand(seed)
+  WIDTH = 50
+  offset = int(rand() * 256)
+  truecolor = ENVIRON["COLORTERM"] ~ /^(truecolor|24bit)$/
+  for (i = 2; i < ARGC; i++) { cows[++ncows] = ARGV[i]; ARGV[i] = "" }
+}
+
+# quotes.txt uses the fortune format: entries separated by a line containing only "%"
+$0 == "%" { if (entry != "") quotes[++nquotes] = entry; entry = ""; next }
+{ if (entry == "") entry = $0; else entry = entry "\n" $0 }
+
+END {
+  if (entry != "") quotes[++nquotes] = entry
+  n = split(quotes[int(rand() * nquotes) + 1], lines, "\n")
+  for (i = 1; i <= n; i++) wrap(lines[i])
+  bubble()
+  cow(cows[int(rand() * ncows) + 1])
+}
+
+# Same as `fold -s`: break at the last space that fits, or mid-word if there is none
+function wrap(line,    p) {
+  while (length(line) > WIDTH) {
+    for (p = WIDTH; p > 0 && substr(line, p, 1) != " "; p--) ;
+    if (p == 0) p = WIDTH
+    add(substr(line, 1, p))
+    line = substr(line, p + 1)
+  }
+  add(line)
+}
+
+function add(s) {
+  sub(/ +$/, "", s)
+  text[++ntext] = s
+  if (length(s) > w) w = length(s)
+}
+
+function bubble(    i, left, right) {
+  paint(" " repeat("_", w + 2))
+  if (ntext == 1) paint("< " text[1] " >")
+  else for (i = 1; i <= ntext; i++) {
+    left = "|"; right = "|"
+    if (i == 1) { left = "/"; right = "\\" }
+    if (i == ntext) { left = "\\"; right = "/" }
+    paint(left " " text[i] repeat(" ", w - length(text[i])) " " right)
+  }
+  paint(" " repeat("-", w + 2))
+}
+
+# .cow files are Perl heredocs: print the body between the <<EOC line and the EOC line
+function cow(file,    line, inside) {
+  while ((getline line < file) > 0) {
+    if (!inside) { if (line ~ /<</) inside = 1; continue }
+    if (line == "EOC") break
+    paint(expand(line))
+  }
+  close(file)
+}
+
+# Undo Perl backslash escapes and fill in $thoughts, $eyes and $tongue
+function expand(s,    out, i, c) {
+  out = ""
+  for (i = 1; i <= length(s); i++) {
+    c = substr(s, i, 1)
+    if (c == "\\") out = out substr(s, ++i, 1)
+    else if (substr(s, i, 9) == "$thoughts") { out = out "\\"; i += 8 }
+    else if (substr(s, i, 5) == "$eyes") { out = out "oo"; i += 4 }
+    else if (substr(s, i, 7) == "$tongue") { out = out "  "; i += 6 }
+    else out = out c
+  }
+  return out
+}
+
+# Same sine-wave rainbow as lolcat (frequency 0.1, spread 3); 256-color fallback when truecolor is not advertised
+function paint(s,    out, i, f, r, g, b) {
+  out = ""
+  for (i = 1; i <= length(s); i++) {
+    f = 0.1 * (offset + row + i / 3)
+    r = int(sin(f) * 127 + 128)
+    g = int(sin(f + 2.094) * 127 + 128)
+    b = int(sin(f + 4.189) * 127 + 128)
+    if (truecolor) out = out sprintf("\033[38;2;%d;%d;%dm", r, g, b)
+    else out = out sprintf("\033[38;5;%dm", 16 + 36 * int(r * 6 / 256) + 6 * int(g * 6 / 256) + int(b * 6 / 256))
+    out = out substr(s, i, 1)
+  }
+  print out "\033[0m"
+  row++
+}
+
+function repeat(c, n,    s) {
+  s = ""
+  while (n-- > 0) s = s c
+  return s
+}
+' "$dir/quotes.txt" "$dir"/cows/*.cow
