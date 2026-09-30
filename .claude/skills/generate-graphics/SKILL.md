@@ -41,7 +41,7 @@ If the line above shows a literal `$ARGUMENTS`, the request is the user's messag
 
 ## Checks
 
-Run from the repository root for each new file. Each check passes when it prints nothing.
+Run from the repository root, passing every new file. Each check passes when it prints nothing.
 
 ASCII only:
 
@@ -52,7 +52,7 @@ LC_ALL=C grep -n '[^ -~]' cows/<name>.txt
 Size:
 
 ```sh
-awk 'length > 30 { print FNR ": " length " columns" } END { if (NR > 8) print NR " lines" }' cows/<name>.txt
+awk 'length > 30 { print FILENAME ":" FNR ": " length " columns" } FNR == 9 { print FILENAME ": more than 8 lines" }' cows/<name>.txt
 ```
 
 The new total for `README.md` is `ls cows/*.txt | wc -l`.

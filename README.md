@@ -33,7 +33,7 @@ I ended up with this repo. Installing it is one `git clone` and one line in your
 ## Features
 
 - 186 curated quotes about programming, innovation, business, startups, science and philosophy.
-- 13 animals and objects, including a rubber duck, an owl, a robot and a coffee mug.
+- 113 characters, animals and objects, including a wizard, an astronaut, a pirate, a rubber duck and a coffee mug.
 - A lolcat-style rainbow. It uses 24-bit color when your terminal supports it and 256 colors otherwise.
 - Cows are plain text files, so you can draw your own in any editor.
 - About 10 ms per run, so your shell doesn't start noticeably slower.
@@ -148,7 +148,7 @@ rm -rf ~/.local/share/shell-greeting
 
 ## AI attribution
 
-Built with Claude, Anthropic's AI model, which wrote the script and skills, drew the 13 cows and picked the quotes; the words belong to the people credited, and "attributed to" marks an uncertain source.
+Built with Claude, Anthropic's AI model, which wrote the script and skills, drew the 113 cows and picked the quotes; the words belong to the people credited, and "attributed to" marks an uncertain source.
 
 ## Acknowledgments
 
