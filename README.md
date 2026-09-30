@@ -153,3 +153,7 @@ Built with Claude, Anthropic's AI model, which wrote the script and skills, drew
 ## Acknowledgments
 
 Inspired by the classic trio of [fortune](https://en.wikipedia.org/wiki/Fortune_(Unix)), [cowsay](https://en.wikipedia.org/wiki/Cowsay) by Tony Monroe, and [lolcat](https://github.com/busyloop/lolcat), whose rainbow formula this script reuses.
+
+## License
+
+MIT. See [`LICENSE`](LICENSE).
