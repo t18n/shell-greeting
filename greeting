@@ -17,7 +17,7 @@ if [ $# -eq 0 ]; then
   esac
 fi
 
-exec awk -v seed="$seed" '
+exec awk -v seed="$seed" -v hour="${now#????}" '
 BEGIN {
   srand(seed)
   WIDTH = 50
@@ -33,11 +33,21 @@ $0 == "%" { if (entry != "") quotes[++nquotes] = entry; entry = ""; next }
 
 END {
   if (entry != "") quotes[++nquotes] = entry
-  n = split(quotes[int(rand() * nquotes) + 1], lines, "\n")
+  quote = quotes[int(rand() * nquotes) + 1]
+  if (hour >= 1 && hour < 5) quote = nudge()
+  n = split(quote, lines, "\n")
   for (i = 1; i <= n; i++) wrap(lines[i])
   bubble()
   graphic(graphics[int(rand() * ngraphics) + 1])
   if (shiny) paint("      * shiny! *")
+}
+
+function nudge(    n, lines) {
+  n = split("Go to bed. The bug will still be there tomorrow, and you will be smarter.|" \
+    "Nothing good gets committed after 2 a.m.|" \
+    "Sleep is the best debugger.|" \
+    "Future you has to review this code. Get some sleep.", lines, "|")
+  return lines[int(rand() * n) + 1] "\n    -- your terminal"
 }
 
 # Same as `fold -s`: break at the last space that fits, or mid-word if there is none
