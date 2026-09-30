@@ -4,11 +4,13 @@
 
 dir=$(cd "$(dirname "$0")" && pwd)
 seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
-now=$(date +%m%d%H)
+read -r today hour weekday <<EOF
+$(date '+%Y%m%d %H %u')
+EOF
 g=$dir/graphics
 
 if [ $# -eq 0 ]; then
-  case ${now%??} in
+  case ${today#????} in
     102[5-9] | 103[01])
       set -- "$g/ghost.txt" "$g/skeleton.txt" "$g/vampire.txt" "$g/mummy.txt" \
         "$g/witch.txt" "$g/zombie.txt" "$g/werewolf.txt" ;;
@@ -17,7 +19,7 @@ if [ $# -eq 0 ]; then
   esac
 fi
 
-exec awk -v seed="$seed" -v hour="${now#????}" '
+exec awk -v seed="$seed" -v hour="$hour" '
 BEGIN {
   srand(seed)
   WIDTH = 50
@@ -42,12 +44,17 @@ END {
   if (shiny) paint("      * shiny! *")
 }
 
-function nudge(    n, lines) {
-  n = split("Go to bed. The bug will still be there tomorrow, and you will be smarter.|" \
+# The awk program sits inside single quotes, so its messages avoid apostrophes.
+function pick(options,    n, a) {
+  n = split(options, a, "|")
+  return a[int(rand() * n) + 1]
+}
+
+function nudge() {
+  return pick("Go to bed. The bug will still be there tomorrow, and you will be smarter.|" \
     "Nothing good gets committed after 2 a.m.|" \
     "Sleep is the best debugger.|" \
-    "Future you has to review this code. Get some sleep.", lines, "|")
-  return lines[int(rand() * n) + 1] "\n    -- your terminal"
+    "Future you has to review this code. Get some sleep.") "\n    -- your terminal"
 }
 
 # Same as `fold -s`: break at the last space that fits, or mid-word if there is none
