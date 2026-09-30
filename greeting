@@ -11,6 +11,7 @@ BEGIN {
   srand(seed)
   WIDTH = 50
   offset = int(rand() * 256)
+  shiny = rand() < 0.02
   truecolor = ENVIRON["COLORTERM"] ~ /^(truecolor|24bit)$/
   for (i = 2; i < ARGC; i++) { graphics[++ngraphics] = ARGV[i]; ARGV[i] = "" }
 }
@@ -25,6 +26,7 @@ END {
   for (i = 1; i <= n; i++) wrap(lines[i])
   bubble()
   graphic(graphics[int(rand() * ngraphics) + 1])
+  if (shiny) paint("      * shiny! *")
 }
 
 # Same as `fold -s`: break at the last space that fits, or mid-word if there is none
@@ -61,14 +63,18 @@ function graphic(file,    line) {
   close(file)
 }
 
-# Same sine-wave rainbow as lolcat (frequency 0.1, spread 3); 256-color fallback when truecolor is not advertised
+# Same sine-wave rainbow as lolcat (frequency 0.1, spread 3), or solid gold for a shiny;
+# 256-color fallback when truecolor is not advertised
 function paint(s,    out, i, f, r, g, b) {
   out = ""
   for (i = 1; i <= length(s); i++) {
-    f = 0.1 * (offset + row + i / 3)
-    r = int(sin(f) * 127 + 128)
-    g = int(sin(f + 2.094) * 127 + 128)
-    b = int(sin(f + 4.189) * 127 + 128)
+    if (shiny) { r = 255; g = 215; b = 0 }
+    else {
+      f = 0.1 * (offset + row + i / 3)
+      r = int(sin(f) * 127 + 128)
+      g = int(sin(f + 2.094) * 127 + 128)
+      b = int(sin(f + 4.189) * 127 + 128)
+    }
     if (truecolor) out = out sprintf("\033[38;2;%d;%d;%dm", r, g, b)
     else out = out sprintf("\033[38;5;%dm", 16 + 36 * int(r * 6 / 256) + 6 * int(g * 6 / 256) + int(b * 6 / 256))
     out = out substr(s, i, 1)

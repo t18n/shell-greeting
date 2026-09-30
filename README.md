@@ -35,6 +35,7 @@ I ended up with this repo. Installing it is one `git clone` and one line in your
 - 186 curated quotes about programming, innovation, business, startups, science and philosophy.
 - 113 characters, animals and objects, including a wizard, an astronaut, a pirate, a rubber duck and a coffee mug.
 - A lolcat-style rainbow. It uses 24-bit color when your terminal supports it and 256 colors otherwise.
+- About 1 greeting in 50 is a rare shiny one, painted in solid gold.
 - Graphics are plain text files, so you can draw your own in any editor.
 - About 10 ms per run, so your shell doesn't start noticeably slower.
 
