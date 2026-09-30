@@ -1,0 +1,65 @@
+---
+name: generate-quotes
+description: Adds real, correctly attributed quotes to quotes.txt from a topic or instruction. Use when asked to add, find, generate, or replace quotes in shell-greeting.
+argument-hint: <topic or instruction>
+---
+
+# Generate quotes
+
+Request: $ARGUMENTS
+
+If the line above shows a literal `$ARGUMENTS`, the request is the user's message. If there is no request, ask for a topic before starting.
+
+## Steps
+
+1. Read `quotes.txt` in full. Note the authors and quotes already there; each new quote is a new one.
+2. Choose quotes that fit the request. Take the count from the request, or add 5. Every quote passes every rule in **Rules**.
+3. Append each quote to the end of `quotes.txt` in the **Format** below.
+4. Run every command in **Checks** until all of them pass.
+5. In `README.md`, set the quote count in the Features list to the new total. The "AI attribution" line names the AI model that picked the quotes; if you are a different model, name both.
+6. Report the added quotes, which ones use "attributed to", and any candidate you dropped with the reason.
+
+## Format
+
+```
+%
+The whole quote on one line; the script wraps it at 50 columns.
+    -- Author
+```
+
+- A line containing only `%` separates entries. Start each new entry with a `%` line, unless the file's last line is already `%`.
+- The author line is four spaces, `--`, one space, then the name.
+- Printable ASCII only: straight quotes `'` and `"`, a plain hyphen `-` for any dash, and names without accents (`Antoine de Saint-Exupery`).
+
+## Rules
+
+- **Real words, real source.** Use quotes you can place in a book, talk, interview, letter, or a long-documented attribution, worded as the person said or wrote them.
+- **Honest credit.** Write `-- attributed to Name` when the source is uncertain. For a known misattribution, credit the real source (`-- Will Durant, summarizing Aristotle`).
+- **Short.** One or two sentences, under 200 characters. Short, credited quotes are what keeps this collection safe to publish; long passages from books, films, or speeches go beyond quotation rules.
+- **Public figures and published works.** Song lyrics stay out because lyrics are licensed strictly even in fragments, and private individuals stay out.
+- **Sayings.** A widely circulated saying with no author is credited as `-- Anonymous` or its origin (`-- Japanese proverb`).
+- **Original lines** only when the request explicitly asks for them, credited as `-- Claude` (or your model's name), never to a real person.
+
+## Checks
+
+Run from the repository root. Each check passes when it prints nothing.
+
+ASCII only:
+
+```sh
+LC_ALL=C grep -n '[^ -~]' quotes.txt
+```
+
+Every entry has an author line:
+
+```sh
+awk '$0 == "%" { if (last !~ /^    -- ./) print "line " NR - 1 ": entry has no author line"; next } { last = $0 } END { if (last !~ /^    -- ./) print "line " NR ": entry has no author line" }' quotes.txt
+```
+
+No duplicate quotes:
+
+```sh
+grep -v -e '^%$' -e '^    -- ' quotes.txt | sort | uniq -d
+```
+
+The new total for `README.md` is `grep -c '^%$' quotes.txt` plus 1.

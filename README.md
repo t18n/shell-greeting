@@ -2,17 +2,7 @@
 
 Show a random quote, spoken by a random ASCII animal in rainbow colors, every time you open a terminal.
 
-```
- __________________________________
-/ Talk is cheap. Show me the code. \
-\     -- Linus Torvalds            /
- ----------------------------------
-  \
-   \     __
-       <(oo)___
-        (  ._> /
-         `----'
-```
+![screenshot](./screenshots/screenshot.jpeg)
 
 It does the same job as `fortune | cowsay | lolcat` in one small script, without installing any of them. It only needs POSIX `sh` and `awk`, so it works the same in zsh, bash, fish, dash and ksh, on macOS, Linux, BSD and WSL.
 
@@ -133,6 +123,17 @@ If you have cowsay installed, you can convert a `.cow` file from another collect
 cowsay -f some.cow x | tail -n +4 > ~/.local/share/shell-greeting/cows/some.txt
 ```
 
+### With an AI agent
+
+Two skills add quotes and cows following the rules above, check their work, and update the counts in this README. In Claude Code, run them from the repository folder:
+
+```
+/generate-quotes 5 quotes about debugging
+/generate-graphics a rocket and a cactus
+```
+
+Other agents, such as Codex or Cursor, read `AGENTS.md`, which points them to the same skill files in `.claude/skills/`.
+
 ### Colors
 
 The script uses 24-bit color when `$COLORTERM` is `truecolor` or `24bit`, and 256 colors otherwise. Most modern terminals set `COLORTERM` themselves. If yours supports 24-bit color but the rainbow looks banded, add `export COLORTERM=truecolor` to your shell's startup file.
@@ -145,9 +146,9 @@ Remove the line from your shell's startup file, then delete the folder:
 rm -rf ~/.local/share/shell-greeting
 ```
 
-## About the content
+## AI attribution
 
-The 13 cows in `cows/` were drawn by Claude, Anthropic's AI model, for this project. Claude also picked the quotes in `quotes.txt`. The words belong to the people credited, and "attributed to" marks quotes whose source is uncertain.
+Built with Claude, Anthropic's AI model, which wrote the script and skills, drew the 13 cows and picked the quotes; the words belong to the people credited, and "attributed to" marks an uncertain source.
 
 ## Acknowledgments
 
