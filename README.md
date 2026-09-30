@@ -39,8 +39,9 @@ I ended up with this repo. Installing it is one `git clone` and one line in your
 - Holiday characters: only spooky ones appear from October 25 to 31, and Santa, the snowman and the elf from December 20 to 26.
 - Open a terminal between 1 and 5 a.m. and you get a nudge to go to bed instead of a quote.
 - A greeting that fits the time of day ("Good morning", "Evening, wrapping up?", "Working late?"), using your login name.
+- One random fact under the graphic: the day of the week, your uptime (with a restart hint after 14 days), your disk space when it's over 80% full, or how many terminals you've opened today.
 - Graphics are plain text files, so you can draw your own in any editor.
-- About 10 ms per run, so your shell doesn't start noticeably slower.
+- About 20 ms per run, so your shell doesn't start noticeably slower.
 
 ## Requirements
 
@@ -146,16 +147,20 @@ The greeting uses your login name. To use a different one, set `GREETING_NAME` i
 export GREETING_NAME="Sam"
 ```
 
+### What it reads about your computer
+
+Everything stays on your machine, and nothing is sent anywhere. The script runs `date`, `uptime` and `df` (for your home folder's disk), and it never reads your shell history. The only thing it writes is `~/.local/state/shell-greeting/count` (or under `$XDG_STATE_HOME` if you set it). That file holds one line, today's date and how many terminals you've opened today. If the folder isn't writable, the count is skipped.
+
 ### Colors
 
 The script uses 24-bit color when `$COLORTERM` is `truecolor` or `24bit`, and 256 colors otherwise. Most modern terminals set `COLORTERM` themselves. If yours supports 24-bit color but the rainbow looks banded, add `export COLORTERM=truecolor` to your shell's startup file.
 
 ## Uninstalling
 
-Remove the line from your shell's startup file, then delete the folder:
+Remove the line from your shell's startup file, then delete the folder and the terminal counter:
 
 ```sh
-rm -rf ~/.local/share/shell-greeting
+rm -rf ~/.local/share/shell-greeting ~/.local/state/shell-greeting
 ```
 
 ## AI attribution

@@ -19,7 +19,18 @@ if [ $# -eq 0 ]; then
   esac
 fi
 
-exec awk -v seed="$seed" -v hour="$hour" -v name="${GREETING_NAME:-${USER:-$(id -un)}}" '
+# Terminals opened today. This is the only thing written to disk: a date and a count.
+state=${XDG_STATE_HOME:-$HOME/.local/state}/shell-greeting
+count=1
+if [ -r "$state/count" ]; then
+  read -r day n < "$state/count"
+  case $n in '' | *[!0-9]*) ;; *) [ "$day" = "$today" ] && count=$((n + 1)) ;; esac
+fi
+mkdir -p "$state" 2>/dev/null && { echo "$today $count" > "$state/count"; } 2>/dev/null
+
+exec awk -v seed="$seed" -v hour="$hour" -v weekday="$weekday" -v count="$count" \
+  -v name="${GREETING_NAME:-${USER:-$(id -un)}}" -v uptime="$(uptime 2>/dev/null)" \
+  -v disk="$(df -P "$HOME" 2>/dev/null | awk 'NR == 2 { print $5 + 0 }')" '
 BEGIN {
   srand(seed)
   WIDTH = 50
@@ -42,6 +53,7 @@ END {
   paint(greeting())
   bubble()
   graphic(graphics[int(rand() * ngraphics) + 1])
+  paint("   " fact())
   if (shiny) paint("      * shiny! *")
 }
 
@@ -65,6 +77,30 @@ function greeting(    s, i) {
   else s = pick("Working late, @?|Hello, night owl @.|Burning the midnight oil, @?")
   i = index(s, "@")
   return substr(s, 1, i - 1) name substr(s, i + 1)
+}
+
+# One random fact about today or this computer, read from date, uptime, df and the counter
+function fact(    f, n, day, days, unit) {
+  split("Monday Tuesday Wednesday Thursday Friday Saturday Sunday", day, " ")
+  if (weekday == 1) f[++n] = pick("Monday again. You got this.|New week, new commits.")
+  else if (weekday == 5) f[++n] = pick("Happy Friday!|It is Friday. Deploy with care.")
+  else if (weekday >= 6) f[++n] = pick("Weekend coding? Respect.|It is the weekend. Take a break too.")
+  else f[++n] = pick("Happy " day[weekday] "!|It is " day[weekday] ". Keep going.")
+
+  if (match(uptime, /up [0-9]+ day/)) {
+    days = substr(uptime, RSTART + 3, RLENGTH - 7) + 0
+    unit = days == 1 ? " day" : " days"
+    if (days >= 14) f[++n] = pick("Up " days unit ". Maybe restart soon?|" days unit " without a reboot. Impressive, or overdue.")
+    else f[++n] = pick("Up " days unit " and counting.|This computer has been awake for " days unit ".")
+  } else if (uptime ~ /up/) f[++n] = pick("Fresh boot today.|Freshly restarted. Clean slate.")
+
+  if (disk >= 95) f[++n] = "Disk " disk "% full! Time to free some space."
+  else if (disk >= 80) f[++n] = pick("Disk " disk "% full. Time to clean up?|Your disk is " disk "% full.")
+
+  if (count == 1) f[++n] = pick("First terminal of the day!|Terminal number one today. Welcome back.")
+  else f[++n] = pick("Terminal #" count " today.|That is terminal number " count " today.")
+
+  return f[int(rand() * n) + 1]
 }
 
 # Same as `fold -s`: break at the last space that fits, or mid-word if there is none
