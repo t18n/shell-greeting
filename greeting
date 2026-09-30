@@ -4,6 +4,7 @@
 
 dir=$(cd "$(dirname "$0")" && pwd)
 seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
+[ $# -eq 0 ] && set -- "$dir"/cows/*.cow
 
 exec awk -v seed="$seed" '
 BEGIN {
@@ -100,4 +101,4 @@ function repeat(c, n,    s) {
   while (n-- > 0) s = s c
   return s
 }
-' "$dir/quotes.txt" "$dir"/cows/*.cow
+' "$dir/quotes.txt" "$@"
