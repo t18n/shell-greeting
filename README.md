@@ -29,7 +29,7 @@ I ended up with this repo. Installing it is one `git clone` and one line in your
 - 86 curated quotes about programming, science and philosophy.
 - 13 animals and objects, including a rubber duck, an owl, a robot and a coffee mug.
 - A lolcat-style rainbow. It uses 24-bit color when your terminal supports it and 256 colors otherwise.
-- Works with standard `.cow` files, so you can bring your own animals.
+- Cows are plain text files, so you can draw your own in any editor.
 - About 10 ms per run, so your shell doesn't start noticeably slower.
 
 ## Requirements
@@ -113,27 +113,25 @@ Existing `fortune` files use this format, so you can paste their contents in. If
 
 ### Animals
 
-Each file in `cows/` is a standard cowsay `.cow` file, which is a Perl heredoc:
+Each cow is a plain `.txt` file in `cows/`, printed exactly as you draw it, right under the bubble. Start with two `\` lines, so the bubble's tail leads into your drawing:
 
-```perl
-$the_cow = <<EOC;
-  $thoughts
-   $thoughts   /\\__/\\
-       ( $eyes )
-EOC
 ```
-
-- `$thoughts` draws the bubble's tail line, and `$eyes` is 2 characters wide.
-- Escape every literal `\` as `\\`, and every literal `$` or `@` as `\$` or `\@`.
-- The heredoc must end with a line containing only `EOC`.
+  \
+   \   /\__/\
+       ( oo )
+```
 
 To preview a cow, pass it as an argument. With one or more cow files as arguments, the script picks only from those:
 
 ```sh
-~/.local/share/shell-greeting/greeting ~/.local/share/shell-greeting/cows/owl.cow
+~/.local/share/shell-greeting/greeting ~/.local/share/shell-greeting/cows/owl.txt
 ```
 
-Plain-ASCII `.cow` files from cowsay or other collections work too: drop them into `cows/`. Colored cows don't work, because they rely on Perl escape codes this script doesn't understand.
+If you have cowsay installed, you can convert a `.cow` file from another collection by rendering it once and dropping the three bubble lines:
+
+```sh
+cowsay -f some.cow x | tail -n +4 > ~/.local/share/shell-greeting/cows/some.txt
+```
 
 ### Colors
 
@@ -146,6 +144,10 @@ Remove the line from your shell's startup file, then delete the folder:
 ```sh
 rm -rf ~/.local/share/shell-greeting
 ```
+
+## About the content
+
+The 13 cows in `cows/` were drawn by Claude, Anthropic's AI model, for this project. Claude also picked the quotes in `quotes.txt`. The words belong to the people credited, and "attributed to" marks quotes whose source is uncertain.
 
 ## Acknowledgments
 
