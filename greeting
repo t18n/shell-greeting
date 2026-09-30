@@ -4,7 +4,18 @@
 
 dir=$(cd "$(dirname "$0")" && pwd)
 seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
-[ $# -eq 0 ] && set -- "$dir"/graphics/*.txt
+now=$(date +%m%d%H)
+g=$dir/graphics
+
+if [ $# -eq 0 ]; then
+  case ${now%??} in
+    102[5-9] | 103[01])
+      set -- "$g/ghost.txt" "$g/skeleton.txt" "$g/vampire.txt" "$g/mummy.txt" \
+        "$g/witch.txt" "$g/zombie.txt" "$g/werewolf.txt" ;;
+    122[0-6]) set -- "$g/santa.txt" "$g/snowman.txt" "$g/elf.txt" ;;
+    *) set -- "$g"/*.txt ;;
+  esac
+fi
 
 exec awk -v seed="$seed" '
 BEGIN {
