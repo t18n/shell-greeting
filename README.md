@@ -20,7 +20,7 @@ Try it:
 ~/.local/share/shell-greeting/greeting
 ```
 
-Leave the folder together: the script looks for `quotes.txt` and `cows/` next to itself. To run it from somewhere else, call it by its full path or make an alias (see below). A symlink won't work, because the script would look for `quotes.txt` and `cows/` in the symlink's folder instead.
+Leave the folder together: the script looks for `quotes.txt` and `graphics/` next to itself. To run it from somewhere else, call it by its full path or make an alias (see below). A symlink won't work, because the script would look for `quotes.txt` and `graphics/` in the symlink's folder instead.
 
 ## Why I made this
 
@@ -28,14 +28,14 @@ I wanted every new terminal to greet me with a quote and a cow I picked, and I w
 
 My first solution was `fortune | cowsay | lolcat` in my `.zshrc`, with a random cow from the [cowfiles](https://github.com/bkendzior/cowfiles) collection. It worked, but it meant installing three packages, and adding my own quote meant editing a fortune file and rebuilding its index with `strfile`.
 
-I ended up with this repo. Installing it is one `git clone` and one line in your shell's startup file. The quotes are a plain text file and the cows are a folder, so managing them is just editing files. It only needs `sh` and `awk`, so it runs in any shell.
+I ended up with this repo. Installing it is one `git clone` and one line in your shell's startup file. The quotes are a plain text file and the graphics are a folder, so managing them is just editing files. It only needs `sh` and `awk`, so it runs in any shell.
 
 ## Features
 
 - 186 curated quotes about programming, innovation, business, startups, science and philosophy.
 - 113 characters, animals and objects, including a wizard, an astronaut, a pirate, a rubber duck and a coffee mug.
 - A lolcat-style rainbow. It uses 24-bit color when your terminal supports it and 256 colors otherwise.
-- Cows are plain text files, so you can draw your own in any editor.
+- Graphics are plain text files, so you can draw your own in any editor.
 - About 10 ms per run, so your shell doesn't start noticeably slower.
 
 ## Requirements
@@ -101,9 +101,9 @@ The quote text, as long as you like. Long lines are wrapped automatically.
 
 Existing `fortune` files use this format, so you can paste their contents in. If their lines are already wrapped at about 72 characters, re-wrap them, or they'll break unevenly at the 50-character bubble width.
 
-### Animals
+### Graphics
 
-Each cow is a plain `.txt` file in `cows/`, printed exactly as you draw it, right under the bubble. Start with two `\` lines, so the bubble's tail leads into your drawing:
+Each graphic is a plain `.txt` file in `graphics/`, printed exactly as you draw it, right under the bubble. Start with two `\` lines, so the bubble's tail leads into your drawing:
 
 ```
   \
@@ -111,21 +111,21 @@ Each cow is a plain `.txt` file in `cows/`, printed exactly as you draw it, righ
        ( oo )
 ```
 
-To preview a cow, pass it as an argument. With one or more cow files as arguments, the script picks only from those:
+To preview a graphic, pass it as an argument. With one or more graphic files as arguments, the script picks only from those:
 
 ```sh
-~/.local/share/shell-greeting/greeting ~/.local/share/shell-greeting/cows/owl.txt
+~/.local/share/shell-greeting/greeting ~/.local/share/shell-greeting/graphics/owl.txt
 ```
 
 If you have cowsay installed, you can convert a `.cow` file from another collection by rendering it once and dropping the three bubble lines:
 
 ```sh
-cowsay -f some.cow x | tail -n +4 > ~/.local/share/shell-greeting/cows/some.txt
+cowsay -f some.cow x | tail -n +4 > ~/.local/share/shell-greeting/graphics/some.txt
 ```
 
 ### With an AI agent
 
-Two skills add quotes and cows following the rules above, check their work, and update the counts in this README. In Claude Code, run them from the repository folder:
+Two skills add quotes and graphics following the rules above, check their work, and update the counts in this README. In Claude Code, run them from the repository folder:
 
 ```
 /generate-quotes 5 quotes about debugging
@@ -148,7 +148,7 @@ rm -rf ~/.local/share/shell-greeting
 
 ## AI attribution
 
-Built with Claude, Anthropic's AI model, which wrote the script and skills, drew the 113 cows and picked the quotes; the words belong to the people credited, and "attributed to" marks an uncertain source.
+Built with Claude, Anthropic's AI model, which wrote the script and skills, drew the 113 graphics and picked the quotes; the words belong to the people credited, and "attributed to" marks an uncertain source.
 
 ## Acknowledgments
 

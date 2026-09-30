@@ -1,10 +1,10 @@
 #!/bin/sh
-# Random quote from quotes.txt spoken by a random cow from cows/, in rainbow colors.
+# Random quote from quotes.txt spoken by a random graphic from graphics/, in rainbow colors.
 # Only POSIX sh and awk, so any shell on macOS, Linux, BSD or WSL can run it.
 
 dir=$(cd "$(dirname "$0")" && pwd)
 seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
-[ $# -eq 0 ] && set -- "$dir"/cows/*.txt
+[ $# -eq 0 ] && set -- "$dir"/graphics/*.txt
 
 exec awk -v seed="$seed" '
 BEGIN {
@@ -12,7 +12,7 @@ BEGIN {
   WIDTH = 50
   offset = int(rand() * 256)
   truecolor = ENVIRON["COLORTERM"] ~ /^(truecolor|24bit)$/
-  for (i = 2; i < ARGC; i++) { cows[++ncows] = ARGV[i]; ARGV[i] = "" }
+  for (i = 2; i < ARGC; i++) { graphics[++ngraphics] = ARGV[i]; ARGV[i] = "" }
 }
 
 # quotes.txt uses the fortune format: entries separated by a line containing only "%"
@@ -24,7 +24,7 @@ END {
   n = split(quotes[int(rand() * nquotes) + 1], lines, "\n")
   for (i = 1; i <= n; i++) wrap(lines[i])
   bubble()
-  cow(cows[int(rand() * ncows) + 1])
+  graphic(graphics[int(rand() * ngraphics) + 1])
 }
 
 # Same as `fold -s`: break at the last space that fits, or mid-word if there is none
@@ -56,7 +56,7 @@ function bubble(    i, left, right) {
   paint(" " repeat("-", w + 2))
 }
 
-function cow(file,    line) {
+function graphic(file,    line) {
   while ((getline line < file) > 0) paint(line)
   close(file)
 }
