@@ -260,6 +260,10 @@ Remove the line from your shell's startup file, then delete the folder and the t
 rm -rf ~/.local/share/shell-greeting ~/.local/state/shell-greeting
 ```
 
+## Contributing
+
+New quotes, graphics and fixes are welcome. See [`CONTRIBUTING.md`](CONTRIBUTING.md) for the rules, the tests and how to record the demo.
+
 ## AI attribution
 
 Built with Claude, Anthropic's AI model, which wrote the script, tools and skills, drew all 165 graphics (113 ASCII, 16 pixel art, 16 braille and 20 illustrations) and picked the quotes; the words belong to the people credited, and "attributed to" marks an uncertain source.
