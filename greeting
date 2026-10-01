@@ -132,6 +132,9 @@ BEGIN {
   odds = ENVIRON["GREETING_SHINY"] == "" ? 50 : ENVIRON["GREETING_SHINY"] + 0
   shiny = odds > 0 && rand() < 1 / odds
   truecolor = ENVIRON["COLORTERM"] ~ /^(truecolor|24bit)$/
+  # NO_COLOR (https://no-color.org): no color codes at all, and no flavors that are only color
+  nocolor = ENVIRON["NO_COLOR"] != ""
+  RESET = nocolor ? "" : "\033[0m"
   for (i = nq + 1; i < ARGC; i++) {
     if (ARGV[i] !~ /\*/) files[++nfiles] = ARGV[i]
     ARGV[i] = ""
@@ -178,6 +181,7 @@ function flavor_of(path) {
 function choose(    i, f, k, n, parts, kv, weight, total, r, pool, np, held, nh) {
   for (i = 1; i <= nfiles; i++) { f = flavor_of(files[i]); found[f]++; byflavor[f, found[f]] = files[i] }
   if (imager == "none") found["image"] = 0
+  if (nocolor) found["pixel"] = found["image"] = 0
 
   f = flavor
   sub(/^images$/, "image", f); sub(/^pixels$/, "pixel", f); sub(/^ascii$/, "art", f)
@@ -367,7 +371,7 @@ function say(s,    i, out, f) {
     for (i = 1; i <= length(s); i++) out = out tint(0.1 * (offset + row + i / 3)) substr(s, i, 1)
   } else if (style == "image") out = (shiny ? color("38", 255, 215, 0) : color("38", 137, 180, 250)) s
   else out = tint(0.35 * (offset / 10 + row)) s
-  print out "\033[0m"
+  print out RESET
   row++
 }
 
@@ -382,6 +386,7 @@ function tint(f,    r, g, b) {
 
 # layer 38 is the text color, 48 the background; 256-color fallback when truecolor is not advertised
 function color(layer, r, g, b) {
+  if (nocolor) return ""
   if (truecolor) return "\033[" layer ";2;" r ";" g ";" b "m"
   return "\033[" layer ";5;" (16 + 36 * int(r * 6 / 256) + 6 * int(g * 6 / 256) + int(b * 6 / 256)) "m"
 }

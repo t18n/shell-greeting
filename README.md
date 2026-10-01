@@ -154,6 +154,8 @@ Everything stays on your machine, and nothing is sent anywhere. For the fact lin
 
 The script uses 24-bit color when `$COLORTERM` is `truecolor` or `24bit`, and 256 colors otherwise. Most modern terminals set `COLORTERM` themselves. If yours supports 24-bit color but the colors look banded, add `export COLORTERM=truecolor` to your shell's startup file.
 
+To turn colors off, set [`NO_COLOR`](https://no-color.org) to any value. The `pixel` and `image` flavors are made of color, so they fall back to ASCII art then; `braille` still works.
+
 ## Customizing
 
 ### Quotes
