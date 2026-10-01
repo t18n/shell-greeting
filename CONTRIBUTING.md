@@ -33,3 +33,21 @@ Thanks for helping. New quotes and graphics are the most welcome contributions; 
 ```sh
 vhs demo.tape
 ```
+
+## Releasing
+
+1. Set `VERSION` near the top of `greeting` and add an entry to `CHANGELOG.md`, then commit.
+2. Tag and push:
+
+   ```sh
+   git tag -a v1.2.3 -m "shell-greeting 1.2.3"
+   git push --follow-tags
+   ```
+
+3. Get the checksum of the release download:
+
+   ```sh
+   curl -sL https://github.com/t18n/shell-greeting/archive/refs/tags/v1.2.3.tar.gz | shasum -a 256
+   ```
+
+4. In `packaging/homebrew/shell-greeting.rb`, update `url` to the new tag and `sha256` to that checksum. Copy the file to the tap repository, [`t18n/homebrew-tap`](https://github.com/t18n/homebrew-tap), as `Formula/shell-greeting.rb`, and push. After the first release, the install command is `brew install t18n/tap/shell-greeting`.
