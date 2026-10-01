@@ -1,4 +1,4 @@
-# Homebrew formula for a tap (github.com/t18n/homebrew-tap, as Formula/shell-greeting.rb).
+# Homebrew formula for the t18n/taps tap (github.com/t18n/homebrew-taps, as Formula/shell-greeting.rb).
 # The release steps in CONTRIBUTING.md say how to fill in url and sha256 for each version.
 class ShellGreeting < Formula
   desc "Random quote with ASCII, pixel, braille or image art for every new terminal"

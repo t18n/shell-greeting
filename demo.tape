@@ -7,7 +7,7 @@ Output screenshots/demo.gif
 Set Shell "bash"
 Set FontSize 15
 Set Width 960
-Set Height 700
+Set Height 420
 Set Padding 20
 Set Theme "Catppuccin Mocha"
 Set TypingSpeed 40ms
@@ -15,6 +15,8 @@ Set TypingSpeed 40ms
 Env COLORTERM "truecolor"
 Env GREETING_SHINY "0"
 Env GREETING_NAME "friend"
+# The fact line would show the recording machine's uptime, disk space and terminal count
+Env GREETING_FACTS "off"
 
 Type "./greeting --flavor art"
 Enter

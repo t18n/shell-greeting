@@ -2,7 +2,7 @@
 
 Show a random quote with a random graphic every time you open a terminal, in one of four flavors: classic ASCII art, pixel art, braille line art or real images.
 
-![screenshot](./screenshots/screenshot.jpeg)
+![shell-greeting showing the art, pixel, braille and image flavors](./screenshots/demo.gif)
 
 It does the same job as `fortune | cowsay | lolcat` in one small script, without installing any of them. It only needs POSIX `sh` and `awk`, so it works the same in zsh, bash, fish, dash and ksh, on macOS, Linux, BSD and WSL.
 
