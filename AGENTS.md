@@ -1,6 +1,6 @@
 # Agent Instructions
 
-`greeting` is the whole program: it prints a random quote from `quotes/` (one file per topic) with a random graphic in one of four flavors, each in its own folder: `graphics/art/` (ASCII), `graphics/pixel/` (pixel art), `graphics/braille/` (braille art) and `graphics/images/` (PNG/JPG). Settings are `GREETING_*` environment variables, documented in the README's Configuration section.
+`greeting` is the whole program: it prints a random quote from `quotes/` (one file per topic) with a random graphic in one of four flavors, each in its own folder: `graphics/art/` (ASCII), `graphics/pixel/` (pixel art), `graphics/braille/` (braille art) and `graphics/images/` (PNG/JPG). Settings are `GREETING_*` environment variables, documented in the README's Configuration section. Users can add content in folders listed in `GREETING_DIRS` (default `~/.config/shell-greeting`), with the same `quotes/` and `graphics/` layout.
 
 ## Adding content
 

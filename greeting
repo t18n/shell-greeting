@@ -9,27 +9,42 @@ seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
 read -r today hour weekday <<EOF
 $(date '+%Y%m%d %H %u')
 EOF
-g=$dir/graphics
-
 flavor=${GREETING_FLAVOR:-random}
 case $1 in
   -f | --flavor) flavor=$2; shift 2 ;;
   --flavor=*) flavor=${1#--flavor=}; shift ;;
 esac
-[ $# -eq 0 ] && set -- "$g"/art/*.txt "$g"/pixel/*.txt "$g"/braille/*.txt \
-  "$g"/images/*.png "$g"/images/*.jpg "$g"/images/*.jpeg
+
+# Content comes from this folder plus each folder in GREETING_DIRS (separated by ":"), which
+# defaults to ~/.config/shell-greeting. Every folder has the same layout: quotes/ and graphics/.
+roots=$dir
+IFS=:
+for d in ${GREETING_DIRS-${XDG_CONFIG_HOME:-$HOME/.config}/shell-greeting}; do
+  [ -d "$d" ] && [ "$d" != "$dir" ] && roots="$roots:$d"
+done
+
+if [ $# -eq 0 ]; then
+  for r in $roots; do
+    set -- "$@" "$r"/graphics/art/*.txt "$r"/graphics/pixel/*.txt "$r"/graphics/braille/*.txt \
+      "$r"/graphics/images/*.png "$r"/graphics/images/*.jpg "$r"/graphics/images/*.jpeg
+  done
+fi
 
 # The quote files go first in the argument list; awk gets their count to tell them apart.
 # GREETING_TOPICS keeps only the named topic files; if none of them exists, every topic is used.
-topics=$(printf '%s' "$GREETING_TOPICS" | tr ',' ' ')
+topics=" $(printf '%s' "$GREETING_TOPICS" | tr ',' ' ') "
 nq=0
-for f in "$dir"/quotes/*.txt; do
-  t=${f##*/}
-  case " $topics " in "  " | *" ${t%.txt} "*) set -- "$f" "$@"; nq=$((nq + 1)) ;; esac
+for pass in topics all; do
+  for r in $roots; do
+    for f in "$r"/quotes/*.txt; do
+      [ -f "$f" ] || continue
+      t=${f##*/}
+      case $pass$topics in all* | "topics  " | *" ${t%.txt} "*) set -- "$f" "$@"; nq=$((nq + 1)) ;; esac
+    done
+  done
+  [ "$nq" -gt 0 ] && break
 done
-if [ "$nq" -eq 0 ]; then
-  for f in "$dir"/quotes/*.txt; do set -- "$f" "$@"; nq=$((nq + 1)); done
-fi
+unset IFS
 
 # Real images need chafa, or a terminal that shows images itself (iTerm2, WezTerm).
 imager=none

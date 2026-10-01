@@ -110,6 +110,7 @@ Set any of these variables in your shell's startup file, before the line that ru
 | `GREETING_FLAVOR` | `random` | `art`, `pixel`, `braille`, `image` or `random` |
 | `GREETING_WEIGHTS` | `art:4 pixel:3 braille:2 image:1` | How often each flavor comes up in `random`. A flavor left out, or set to `0`, never shows. |
 | `GREETING_TOPICS` | all topics | Quote topics to use, separated by spaces or commas: `programming`, `innovation`, `business`, `startups`, `science`, `wisdom`, `humor`, plus any file you add to `quotes/` |
+| `GREETING_DIRS` | `~/.config/shell-greeting` | Your own content folders, separated by `:` (see [Your own content](#your-own-content)). Set it empty to use only the bundled content. |
 | `GREETING_NAME` | your login name | The name in the time-of-day greeting |
 | `GREETING_HELLO` | `on` | `off` hides the time-of-day greeting |
 | `GREETING_FACTS` | `on` | `off` hides the fact line. It also stops the terminal counter, so nothing is written to disk. |
@@ -217,6 +218,21 @@ tools/png-to-braille drawing.png > graphics/braille/drawing.txt
 **Real images** (`graphics/images/*.png` or `.jpg`): drop pictures in. Bold, simple pictures with a transparent background look best at this small size.
 
 Both converters need ImageMagick and only run when you add graphics, never when the greeting runs. They shrink the picture to fit, and take an optional maximum width and height (in pixels for pixel art, dots for braille) after the file name.
+
+### Your own content
+
+Keep your own quotes and graphics outside the repository, so `git pull` never conflicts with them. The script mixes in everything from `~/.config/shell-greeting` (or `$XDG_CONFIG_HOME/shell-greeting`), which uses the same layout as the repository:
+
+```
+~/.config/shell-greeting/
+  quotes/my-favorites.txt
+  graphics/art/my-cat.txt
+  graphics/pixel/my-sprite.txt
+  graphics/braille/my-drawing.txt
+  graphics/images/my-photo.png
+```
+
+Every part is optional. A quote file there is a topic like any other, so `GREETING_TOPICS=my-favorites` shows only your own quotes. To use other folders, list them in `GREETING_DIRS`, separated by `:`.
 
 ### With an AI agent
 
