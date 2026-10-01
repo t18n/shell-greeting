@@ -20,7 +20,7 @@ Try it:
 ~/.local/share/shell-greeting/greeting
 ```
 
-Leave the folder together: the script looks for `quotes.txt` and `graphics/` next to itself. To run it from somewhere else, call it by its full path or make an alias (see below). A symlink won't work, because the script would look for `quotes.txt` and `graphics/` in the symlink's folder instead.
+Leave the folder together: the script looks for `quotes/` and `graphics/` next to itself. To run it from somewhere else, call it by its full path or make an alias (see below). A symlink won't work, because the script would look for `quotes/` and `graphics/` in the symlink's folder instead.
 
 ## Why I made this
 
@@ -28,7 +28,7 @@ I wanted every new terminal to greet me with a quote and a cow I picked, and I w
 
 My first solution was `fortune | cowsay | lolcat` in my `.zshrc`, with a random cow from the [cowfiles](https://github.com/bkendzior/cowfiles) collection. It worked, but it meant installing three packages, and adding my own quote meant editing a fortune file and rebuilding its index with `strfile`.
 
-I ended up with this repo. Installing it is one `git clone` and one line in your shell's startup file. The quotes are a plain text file and the graphics are folders, so managing them is just editing files. It only needs `sh` and `awk`, so it runs in any shell.
+I ended up with this repo. Installing it is one `git clone` and one line in your shell's startup file. The quotes and graphics are plain files in folders, so managing them is just editing files. It only needs `sh` and `awk`, so it runs in any shell.
 
 ## Features
 
@@ -41,7 +41,7 @@ I ended up with this repo. Installing it is one `git clone` and one line in your
   | `braille` | 16 braille line drawings in `graphics/braille/` | Thin box with one rainbow color per row |
   | `image` | 20 illustrations in `graphics/images/` | Minimal caption card above a real picture |
 
-- 186 curated quotes about programming, innovation, business, startups, science and philosophy.
+- 186 curated quotes in 7 topics: programming, innovation, business, startups, science, wisdom and humor.
 - A greeting that fits the time of day ("Good morning", "Evening, wrapping up?", "Working late?"), using your login name.
 - One random fact under the graphic: the day of the week, your uptime (with a restart hint after 14 days), your disk space when it's over 80% full, or how many terminals you've opened today.
 - About 1 greeting in 50 is a rare shiny one, painted in solid gold.
@@ -153,7 +153,7 @@ The script uses 24-bit color when `$COLORTERM` is `truecolor` or `24bit`, and 25
 
 ### Quotes
 
-Quotes live in `quotes.txt`, in the same format `fortune` uses: write each entry, then a line containing only `%`.
+Quotes live in `quotes/`, one file per topic (`programming.txt`, `startups.txt` and so on), in the same format `fortune` uses: write each entry, then a line containing only `%`. A new `.txt` file in `quotes/` becomes a new topic.
 
 ```
 The quote text, as long as you like. Long lines are wrapped automatically.

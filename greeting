@@ -1,5 +1,5 @@
 #!/bin/sh
-# Random quote from quotes.txt with a random graphic in one of four flavors:
+# Random quote from quotes/ with a random graphic in one of four flavors:
 # art (ASCII), pixel (pixel art), braille (braille line art) or image (real pictures).
 # Only POSIX sh and awk, so any shell on macOS, Linux, BSD or WSL can run it.
 # Settings come from GREETING_* environment variables; see "Configuration" in README.md.
@@ -18,6 +18,11 @@ case $1 in
 esac
 [ $# -eq 0 ] && set -- "$g"/art/*.txt "$g"/pixel/*.txt "$g"/braille/*.txt \
   "$g"/images/*.png "$g"/images/*.jpg "$g"/images/*.jpeg
+
+# The quote files go first in the argument list; awk gets their count to tell them apart.
+nq=0
+for f in "$dir"/quotes/*.txt; do nq=$((nq + 1)); done
+set -- "$dir"/quotes/*.txt "$@"
 
 # Real images need chafa, or a terminal that shows images itself (iTerm2, WezTerm).
 imager=none
@@ -41,7 +46,7 @@ if [ "$GREETING_FACTS" != off ]; then
   disk=$(df -P "$HOME" 2>/dev/null | awk 'NR == 2 { print $5 + 0 }')
 fi
 
-exec awk -v seed="$seed" -v hour="$hour" -v weekday="$weekday" -v mmdd="${today#????}" \
+exec awk -v nq="$nq" -v seed="$seed" -v hour="$hour" -v weekday="$weekday" -v mmdd="${today#????}" \
   -v flavor="$flavor" -v imager="$imager" -v count="$count" -v uptime="$uptime" -v disk="$disk" \
   -v name="${GREETING_NAME:-${USER:-$(id -un)}}" '
 BEGIN {
@@ -51,13 +56,14 @@ BEGIN {
   odds = ENVIRON["GREETING_SHINY"] == "" ? 50 : ENVIRON["GREETING_SHINY"] + 0
   shiny = odds > 0 && rand() < 1 / odds
   truecolor = ENVIRON["COLORTERM"] ~ /^(truecolor|24bit)$/
-  for (i = 2; i < ARGC; i++) {
+  for (i = nq + 1; i < ARGC; i++) {
     if (ARGV[i] !~ /\*/) files[++nfiles] = ARGV[i]
     ARGV[i] = ""
   }
 }
 
-# quotes.txt uses the fortune format: entries separated by a line containing only "%"
+# Quote files use the fortune format: entries separated by a line containing only "%"
+FNR == 1 && entry != "" { quotes[++nquotes] = entry; entry = "" }
 $0 == "%" { if (entry != "") quotes[++nquotes] = entry; entry = ""; next }
 { if (entry == "") entry = $0; else entry = entry "\n" $0 }
 
@@ -309,4 +315,4 @@ function repeat(c, n,    s) {
   while (n-- > 0) s = s c
   return s
 }
-' "$dir/quotes.txt" "$@"
+' "$@"

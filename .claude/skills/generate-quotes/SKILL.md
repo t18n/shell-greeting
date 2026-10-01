@@ -1,6 +1,6 @@
 ---
 name: generate-quotes
-description: Adds real, correctly attributed quotes to quotes.txt from a topic or instruction. Use when asked to add, find, generate, or replace quotes in shell-greeting.
+description: Adds real, correctly attributed quotes to the topic files in quotes/ from a topic or instruction. Use when asked to add, find, generate, or replace quotes in shell-greeting.
 argument-hint: <topic or instruction>
 ---
 
@@ -12,9 +12,9 @@ If the line above shows a literal `$ARGUMENTS`, the request is the user's messag
 
 ## Steps
 
-1. Read `quotes.txt` in full. Note the authors and quotes already there; each new quote is a new one.
+1. List `quotes/` and read every file in it. Each file is one topic (`programming.txt`, `startups.txt` and so on). Note the authors and quotes already there; each new quote is a new one.
 2. Choose quotes that fit the request. Take the count from the request, or add 5. Every quote passes every rule in **Rules**.
-3. Append each quote to the end of `quotes.txt` in the **Format** below.
+3. Append each quote to the end of the topic file it fits best, in the **Format** below. A quote that fits no existing topic starts a new file, `quotes/<kebab-case-topic>.txt`; add the topic to the `GREETING_TOPICS` row in the README's Configuration table.
 4. Run every command in **Checks** until all of them pass.
 5. In `README.md`, set the quote count in the Features list to the new total. The "AI attribution" line names the AI model that picked the quotes; if you are a different model, name both.
 6. Report the added quotes, which ones use "attributed to", and any candidate you dropped with the reason.
@@ -47,19 +47,23 @@ Run from the repository root. Each check passes when it prints nothing.
 ASCII only:
 
 ```sh
-LC_ALL=C grep -n '[^ -~]' quotes.txt
+LC_ALL=C grep -n '[^ -~]' quotes/*.txt
 ```
 
 Every entry has an author line:
 
 ```sh
-awk '$0 == "%" { if (last !~ /^    -- ./) print "line " NR - 1 ": entry has no author line"; next } { last = $0 } END { if (last !~ /^    -- ./) print "line " NR ": entry has no author line" }' quotes.txt
+for f in quotes/*.txt; do awk '$0 == "%" { if (last !~ /^    -- ./) print FILENAME ":" NR - 1 ": entry has no author line"; next } { last = $0 } END { if (last !~ /^    -- ./) print FILENAME ":" NR ": entry has no author line" }' "$f"; done
 ```
 
 No duplicate quotes:
 
 ```sh
-grep -v -e '^%$' -e '^    -- ' quotes.txt | sort | uniq -d
+cat quotes/*.txt | grep -v -e '^%$' -e '^    -- ' | sort | uniq -d
 ```
 
-The new total for `README.md` is `grep -c '^%$' quotes.txt` plus 1.
+The new total for `README.md` counts every entry in every file:
+
+```sh
+awk 'FNR == 1 || $0 == "%" { n++ } END { print n }' quotes/*.txt
+```

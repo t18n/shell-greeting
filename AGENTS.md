@@ -1,10 +1,10 @@
 # Agent Instructions
 
-`greeting` is the whole program: it prints a random quote from `quotes.txt` with a random graphic in one of four flavors, each in its own folder: `graphics/art/` (ASCII), `graphics/pixel/` (pixel art), `graphics/braille/` (braille art) and `graphics/images/` (PNG/JPG). Settings are `GREETING_*` environment variables, documented in the README's Configuration section.
+`greeting` is the whole program: it prints a random quote from `quotes/` (one file per topic) with a random graphic in one of four flavors, each in its own folder: `graphics/art/` (ASCII), `graphics/pixel/` (pixel art), `graphics/braille/` (braille art) and `graphics/images/` (PNG/JPG). Settings are `GREETING_*` environment variables, documented in the README's Configuration section.
 
 ## Adding content
 
-Every addition to `quotes.txt` or `graphics/` goes through its skill, including one-off edits. Agents without slash-command skills read the skill file and follow its steps.
+Every addition to `quotes/` or `graphics/` goes through its skill, including one-off edits. Agents without slash-command skills read the skill file and follow its steps.
 
 | Task | Skill | File |
 | --- | --- | --- |
@@ -36,7 +36,7 @@ for s in sh bash dash ksh zsh; do for f in art pixel braille image; do command -
 
 - `greeting` uses only POSIX `sh` and POSIX `awk` features (no bash, zsh, or gawk extensions). Its only optional dependency is `chafa`, for real images; everything else falls back without it.
 - Unicode output (box lines, half blocks) is written as octal byte escapes in the awk program, never as literal characters, and is only colored a whole line at a time, so no awk splits a multibyte character.
-- `quotes.txt`, `graphics/art/` and `graphics/pixel/` are printable ASCII only: some awk versions count bytes, so a multibyte character shifts the bubble's right edge. `graphics/braille/` holds only braille characters and spaces.
+- `quotes/`, `graphics/art/` and `graphics/pixel/` are printable ASCII only: some awk versions count bytes, so a multibyte character shifts the bubble's right edge. `graphics/braille/` holds only braille characters and spaces.
 - `README.md` states how many quotes and graphics each flavor has, in the Features table and the AI attribution line; keep the counts current.
 - Personal facts come only from `date`, `uptime`, `df` and the counter file in `~/.local/state/shell-greeting/`; the script reads no shell history and sends nothing over the network.
 - The awk program sits inside single quotes, so its messages are written without apostrophes ("It is Friday").
