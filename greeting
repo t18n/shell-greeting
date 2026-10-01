@@ -1,43 +1,60 @@
 #!/bin/sh
-# Random quote from quotes.txt spoken by a random graphic from graphics/art/, in rainbow colors.
+# Random quote from quotes.txt with a random graphic in one of four flavors:
+# art (ASCII), pixel (pixel art), braille (braille line art) or image (real pictures).
 # Only POSIX sh and awk, so any shell on macOS, Linux, BSD or WSL can run it.
+# Settings come from GREETING_* environment variables; see "Configuration" in README.md.
 
 dir=$(cd "$(dirname "$0")" && pwd)
 seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
 read -r today hour weekday <<EOF
 $(date '+%Y%m%d %H %u')
 EOF
-g=$dir/graphics/art
+g=$dir/graphics
 
-if [ $# -eq 0 ]; then
-  case ${today#????} in
-    102[5-9] | 103[01])
-      set -- "$g/ghost.txt" "$g/skeleton.txt" "$g/vampire.txt" "$g/mummy.txt" \
-        "$g/witch.txt" "$g/zombie.txt" "$g/werewolf.txt" ;;
-    122[0-6]) set -- "$g/santa.txt" "$g/snowman.txt" "$g/elf.txt" ;;
-    *) set -- "$g"/*.txt ;;
-  esac
+flavor=${GREETING_FLAVOR:-random}
+case $1 in
+  -f | --flavor) flavor=$2; shift 2 ;;
+  --flavor=*) flavor=${1#--flavor=}; shift ;;
+esac
+[ $# -eq 0 ] && set -- "$g"/art/*.txt "$g"/pixel/*.txt "$g"/braille/*.txt \
+  "$g"/images/*.png "$g"/images/*.jpg "$g"/images/*.jpeg
+
+# Real images need chafa, or a terminal that shows images itself (iTerm2, WezTerm).
+imager=none
+if command -v chafa >/dev/null 2>&1; then
+  imager=chafa
+elif [ -z "$TMUX" ] && { [ "$TERM_PROGRAM" = iTerm.app ] || [ "$TERM_PROGRAM" = WezTerm ]; }; then
+  imager=iterm
 fi
 
-# Terminals opened today. This is the only thing written to disk: a date and a count.
-state=${XDG_STATE_HOME:-$HOME/.local/state}/shell-greeting
-count=1
-if [ -r "$state/count" ]; then
-  read -r day n < "$state/count"
-  case $n in '' | *[!0-9]*) ;; *) [ "$day" = "$today" ] && count=$((n + 1)) ;; esac
+count=0 uptime='' disk=0
+if [ "$GREETING_FACTS" != off ]; then
+  # Terminals opened today. This is the only thing written to disk: a date and a count.
+  state=${XDG_STATE_HOME:-$HOME/.local/state}/shell-greeting
+  count=1
+  if [ -r "$state/count" ]; then
+    read -r day n < "$state/count"
+    case $n in '' | *[!0-9]*) ;; *) [ "$day" = "$today" ] && count=$((n + 1)) ;; esac
+  fi
+  mkdir -p "$state" 2>/dev/null && { echo "$today $count" > "$state/count"; } 2>/dev/null
+  uptime=$(uptime 2>/dev/null)
+  disk=$(df -P "$HOME" 2>/dev/null | awk 'NR == 2 { print $5 + 0 }')
 fi
-mkdir -p "$state" 2>/dev/null && { echo "$today $count" > "$state/count"; } 2>/dev/null
 
-exec awk -v seed="$seed" -v hour="$hour" -v weekday="$weekday" -v count="$count" \
-  -v name="${GREETING_NAME:-${USER:-$(id -un)}}" -v uptime="$(uptime 2>/dev/null)" \
-  -v disk="$(df -P "$HOME" 2>/dev/null | awk 'NR == 2 { print $5 + 0 }')" '
+exec awk -v seed="$seed" -v hour="$hour" -v weekday="$weekday" -v mmdd="${today#????}" \
+  -v flavor="$flavor" -v imager="$imager" -v count="$count" -v uptime="$uptime" -v disk="$disk" \
+  -v name="${GREETING_NAME:-${USER:-$(id -un)}}" '
 BEGIN {
   srand(seed)
   WIDTH = 50
   offset = int(rand() * 256)
-  shiny = rand() < 0.02
+  odds = ENVIRON["GREETING_SHINY"] == "" ? 50 : ENVIRON["GREETING_SHINY"] + 0
+  shiny = odds > 0 && rand() < 1 / odds
   truecolor = ENVIRON["COLORTERM"] ~ /^(truecolor|24bit)$/
-  for (i = 2; i < ARGC; i++) { graphics[++ngraphics] = ARGV[i]; ARGV[i] = "" }
+  for (i = 2; i < ARGC; i++) {
+    if (ARGV[i] !~ /\*/) files[++nfiles] = ARGV[i]
+    ARGV[i] = ""
+  }
 }
 
 # quotes.txt uses the fortune format: entries separated by a line containing only "%"
@@ -47,20 +64,74 @@ $0 == "%" { if (entry != "") quotes[++nquotes] = entry; entry = ""; next }
 END {
   if (entry != "") quotes[++nquotes] = entry
   quote = quotes[int(rand() * nquotes) + 1]
-  if (hour >= 1 && hour < 5) quote = nudge()
+  if (hour >= 1 && hour < 5 && ENVIRON["GREETING_NIGHT"] != "off") quote = nudge()
   n = split(quote, lines, "\n")
   for (i = 1; i <= n; i++) wrap(lines[i])
-  paint(greeting())
-  bubble()
-  graphic(graphics[int(rand() * ngraphics) + 1])
-  paint("   " fact())
-  if (shiny) paint("      * shiny! *")
+
+  file = choose()
+  if (ENVIRON["GREETING_HELLO"] != "off") say(greeting())
+  if (style == "art") { bubble(); art(file) }
+  else if (style == "pixel") { box("\342\225\255", "\342\225\256", "\342\225\260", "\342\225\257", ""); tail("\342\225\262"); sprite(file) }
+  else if (style == "braille") { box("\342\224\214", "\342\224\220", "\342\224\224", "\342\224\230", "\342\224\254"); tail("\342\224\202"); art(file) }
+  else { card(); image(file) }
+  if (ENVIRON["GREETING_FACTS"] != "off") say("   " fact())
+  if (shiny) say("      * shiny! *")
 }
 
 # The awk program sits inside single quotes, so its messages avoid apostrophes.
 function pick(options,    n, a) {
   n = split(options, a, "|")
   return a[int(rand() * n) + 1]
+}
+
+function flavor_of(path) {
+  if (path ~ /\.(png|jpe?g)$/) return "image"
+  if (path ~ /\/pixel\/[^\/]*$/) return "pixel"
+  if (path ~ /\/braille\/[^\/]*$/) return "braille"
+  return "art"
+}
+
+# Picks the flavor (from GREETING_FLAVOR, --flavor or GREETING_WEIGHTS), then a graphic in it.
+# A flavor with no graphics, or images without a way to show them, falls back to pixel or art.
+function choose(    i, f, k, n, parts, kv, weight, total, r, pool, np, held, nh) {
+  for (i = 1; i <= nfiles; i++) { f = flavor_of(files[i]); found[f]++; byflavor[f, found[f]] = files[i] }
+  if (imager == "none") found["image"] = 0
+
+  f = flavor
+  sub(/^images$/, "image", f); sub(/^pixels$/, "pixel", f); sub(/^ascii$/, "art", f)
+  if (f !~ /^(art|pixel|braille|image)$/) {
+    n = split(ENVIRON["GREETING_WEIGHTS"] == "" ? "art:4 pixel:3 braille:2 image:1" : ENVIRON["GREETING_WEIGHTS"], parts, " ")
+    total = 0
+    for (i = 1; i <= n; i++) {
+      split(parts[i], kv, ":")
+      if (found[kv[1]] > 0 && kv[2] > 0) { weight[kv[1]] = kv[2]; total += kv[2] }
+    }
+    f = ""
+    r = rand() * total
+    for (k in weight) if (f == "" && (r -= weight[k]) < 0) f = k
+  }
+  if (f == "image" && !found["image"]) f = found["pixel"] ? "pixel" : "art"
+  if (!found[f]) f = "art"
+  style = f
+
+  np = found[f]
+  for (i = 1; i <= np; i++) pool[i] = byflavor[f, i]
+  if (ENVIRON["GREETING_HOLIDAYS"] != "off" && (held = holiday()) != "")
+    for (i = 1; i <= np; i++) if (index(held, " " basename(pool[i]) " ")) keep[++nh] = pool[i]
+  if (nh) return keep[int(rand() * nh) + 1]
+  return pool[int(rand() * np) + 1]
+}
+
+function holiday() {
+  if (mmdd >= 1025 && mmdd <= 1031) return " ghost skeleton vampire mummy witch zombie werewolf pumpkin "
+  if (mmdd >= 1220 && mmdd <= 1226) return " santa snowman elf "
+  return ""
+}
+
+function basename(path) {
+  sub(/.*\//, "", path)
+  sub(/\.[^.]*$/, "", path)
+  return path
 }
 
 function nudge() {
@@ -120,41 +191,117 @@ function add(s) {
   if (length(s) > w) w = length(s)
 }
 
+# art: the classic cowsay bubble
 function bubble(    i, left, right) {
-  paint(" " repeat("_", w + 2))
-  if (ntext == 1) paint("< " text[1] " >")
+  say(" " repeat("_", w + 2))
+  if (ntext == 1) say("< " text[1] " >")
   else for (i = 1; i <= ntext; i++) {
     left = "|"; right = "|"
     if (i == 1) { left = "/"; right = "\\" }
     if (i == ntext) { left = "\\"; right = "/" }
-    paint(left " " text[i] repeat(" ", w - length(text[i])) " " right)
+    say(left " " text[i] repeat(" ", w - length(text[i])) " " right)
   }
-  paint(" " repeat("-", w + 2))
+  say(" " repeat("-", w + 2))
 }
 
-function graphic(file,    line) {
-  while ((getline line < file) > 0) paint(line)
+# pixel and braille: a box drawn with Unicode lines; "stem" joins the tail to the bottom edge
+function box(tl, tr, bl, br, stem,    i, h) {
+  h = "\342\224\200"
+  say(tl repeat(h, w + 2) tr)
+  for (i = 1; i <= ntext; i++) say("\342\224\202 " text[i] repeat(" ", w - length(text[i])) " \342\224\202")
+  if (stem == "") say(bl repeat(h, w + 2) br)
+  else say(bl h stem repeat(h, w) br)
+}
+
+function tail(c) {
+  if (style == "pixel") { say("   " c); say("    " c) }
+  else say("  " c)
+}
+
+# image: a minimal caption card with an accent bar
+function card(    i) {
+  for (i = 1; i <= ntext; i++) say("\342\226\214 " text[i])
+}
+
+function art(file,    line) {
+  while ((getline line < file) > 0) say(line)
   close(file)
 }
 
-# Same sine-wave rainbow as lolcat (frequency 0.1, spread 3), or solid gold for a shiny;
-# 256-color fallback when truecolor is not advertised
-function paint(s,    out, i, f, r, g, b) {
-  out = ""
-  for (i = 1; i <= length(s); i++) {
-    if (shiny) { r = 255; g = 215; b = 0 }
-    else {
-      f = 0.1 * (offset + row + i / 3)
-      r = int(sin(f) * 127 + 128)
-      g = int(sin(f + 2.094) * 127 + 128)
-      b = int(sin(f + 4.189) * 127 + 128)
-    }
-    if (truecolor) out = out sprintf("\033[38;2;%d;%d;%dm", r, g, b)
-    else out = out sprintf("\033[38;5;%dm", 16 + 36 * int(r * 6 / 256) + 6 * int(g * 6 / 256) + int(b * 6 / 256))
-    out = out substr(s, i, 1)
+# pixel files: a palette ("k #1b1b1b", ". transparent"), a line "---", then the pixel grid.
+# Two pixel rows share one text row: the top pixel is the color of a half block, the bottom its background.
+function sprite(file,    line, grid, pal, nr, y, x, top, bot, t, b, out) {
+  while ((getline line < file) > 0) {
+    if (line == "---") grid = 1
+    else if (grid) rows[++nr] = line
+    else pal[substr(line, 1, 1)] = substr(line, 3)
   }
+  close(file)
+  for (y = 1; y <= nr; y += 2) {
+    out = "    "
+    top = rows[y]; bot = y < nr ? rows[y + 1] : ""
+    for (x = 1; x <= length(top); x++) {
+      t = pal[substr(top, x, 1)]; b = bot == "" ? "transparent" : pal[substr(bot, x, 1)]
+      if (t == "transparent" && b == "transparent") out = out "\033[0m "
+      else if (b == "transparent") out = out "\033[0m" hex("38", t) "\342\226\200"
+      else if (t == "transparent") out = out "\033[0m" hex("38", b) "\342\226\204"
+      else out = out hex("38", t) hex("48", b) "\342\226\200"
+    }
+    print out "\033[0m"
+  }
+}
+
+function hex(layer, h,    digits) {
+  digits = "0123456789abcdef"
+  h = tolower(h)
+  return color(layer, \
+    (index(digits, substr(h, 2, 1)) - 1) * 16 + index(digits, substr(h, 3, 1)) - 1, \
+    (index(digits, substr(h, 4, 1)) - 1) * 16 + index(digits, substr(h, 5, 1)) - 1, \
+    (index(digits, substr(h, 6, 1)) - 1) * 16 + index(digits, substr(h, 7, 1)) - 1)
+}
+
+# Shows a picture with chafa, or the iTerm2 image escape code. The path goes to sh in single quotes.
+function image(file,    parts, n, i, q, size, cmd) {
+  n = split(file, parts, "\047")
+  q = parts[1]
+  for (i = 2; i <= n; i++) q = q "\047\\\047\047" parts[i]
+  size = ENVIRON["GREETING_IMAGE_SIZE"] == "" ? "24x12" : ENVIRON["GREETING_IMAGE_SIZE"]
+  if (imager == "chafa") cmd = "chafa --size=" size " --animate=off \047" q "\047"
+  else {
+    split(size, parts, "x")
+    cmd = "printf \"\\033]1337;File=inline=1;width=" parts[1] ";height=" parts[2] ";preserveAspectRatio=1:\"; " \
+      "base64 < \047" q "\047 | tr -d \"\\n\"; printf \"\\a\\n\""
+  }
+  fflush()
+  system(cmd)
+}
+
+# art colors every letter (a lolcat-style rainbow); the other flavors color whole lines, so
+# multibyte characters are never split: pastel for pixel, one rainbow color per row for braille,
+# a single accent for image. Shiny turns everything gold.
+function say(s,    i, out, f) {
+  if (style == "art") {
+    out = ""
+    for (i = 1; i <= length(s); i++) out = out tint(0.1 * (offset + row + i / 3)) substr(s, i, 1)
+  } else if (style == "image") out = (shiny ? color("38", 255, 215, 0) : color("38", 137, 180, 250)) s
+  else out = tint(0.35 * (offset / 10 + row)) s
   print out "\033[0m"
   row++
+}
+
+function tint(f,    r, g, b) {
+  if (shiny) return color("38", 255, 215, 0)
+  r = int(sin(f) * 127 + 128)
+  g = int(sin(f + 2.094) * 127 + 128)
+  b = int(sin(f + 4.189) * 127 + 128)
+  if (style == "pixel") { r = int((r + 510) / 3); g = int((g + 510) / 3); b = int((b + 510) / 3) }
+  return color("38", r, g, b)
+}
+
+# layer 38 is the text color, 48 the background; 256-color fallback when truecolor is not advertised
+function color(layer, r, g, b) {
+  if (truecolor) return "\033[" layer ";2;" r ";" g ";" b "m"
+  return "\033[" layer ";5;" (16 + 36 * int(r * 6 / 256) + 6 * int(g * 6 / 256) + int(b * 6 / 256)) "m"
 }
 
 function repeat(c, n,    s) {
