@@ -18,6 +18,9 @@ Every addition to `quotes/` or `graphics/` goes through its skill, including one
 ./greeting
 ./greeting --flavor pixel
 
+# Show what the script finds: folders, topics, graphics per flavor
+./greeting --list
+
 # Preview one graphic; the flavor comes from its folder
 ./greeting graphics/pixel/cat.txt
 

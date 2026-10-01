@@ -142,6 +142,8 @@ For a single run, pass the flavor as an option instead. It wins over `GREETING_F
 ~/.local/share/shell-greeting/greeting --flavor braille
 ```
 
+`--list` shows which content folders, quote topics and graphics the script finds, and whether real images can be shown in this terminal. `--help` lists every option, and `--version` shows the version.
+
 **Over SSH:** set the flavor in the startup file on the server, like anywhere else. Real images usually show as colored blocks over SSH, because the server can't tell what your local terminal supports; Kitty is an exception, since its `TERM` setting is passed along. Inside tmux, images only work through `chafa`'s colored blocks. `art` or `pixel` look the same everywhere, which makes them the safe choice on remote machines.
 
 ### What it reads about your computer

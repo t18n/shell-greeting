@@ -9,11 +9,40 @@ seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
 read -r today hour weekday <<EOF
 $(date '+%Y%m%d %H %u')
 EOF
-flavor=${GREETING_FLAVOR:-random}
-case $1 in
-  -f | --flavor) flavor=$2; shift 2 ;;
-  --flavor=*) flavor=${1#--flavor=}; shift ;;
-esac
+VERSION=1.0.0
+
+usage() {
+  cat <<'HELP'
+Usage: greeting [options] [graphic files...]
+
+Shows a random quote with a random graphic. Graphic files given as arguments
+are the only ones it picks from; their folder decides the flavor.
+
+Options:
+  -f, --flavor NAME   art, pixel, braille, image or random
+  -l, --list          show content folders, quote topics and graphics, then exit
+  -h, --help          show this help
+  -V, --version       show the version
+
+Settings are GREETING_* environment variables; see "Configuration" in the README.
+HELP
+}
+
+flavor=${GREETING_FLAVOR:-random} list=''
+while [ $# -gt 0 ]; do
+  case $1 in
+    -f | --flavor)
+      [ $# -ge 2 ] || { echo "greeting: $1 needs a flavor name (try --help)" >&2; exit 2; }
+      flavor=$2; shift 2 ;;
+    --flavor=*) flavor=${1#--flavor=}; shift ;;
+    -l | --list) list=1; shift ;;
+    -h | --help) usage; exit 0 ;;
+    -V | --version) echo "shell-greeting $VERSION"; exit 0 ;;
+    --) shift; break ;;
+    -?*) echo "greeting: unknown option $1 (try --help)" >&2; exit 2 ;;
+    *) break ;;
+  esac
+done
 
 # Content comes from this folder plus each folder in GREETING_DIRS (separated by ":"), which
 # defaults to ~/.config/shell-greeting. Every folder has the same layout: quotes/ and graphics/.
@@ -52,6 +81,31 @@ if command -v chafa >/dev/null 2>&1; then
   imager=chafa
 elif [ -z "$TMUX" ] && { [ "$TERM_PROGRAM" = iTerm.app ] || [ "$TERM_PROGRAM" = WezTerm ]; }; then
   imager=iterm
+fi
+
+if [ -n "$list" ]; then
+  echo "shell-greeting $VERSION"
+  echo "Content folders:"
+  IFS=:
+  for r in $roots; do echo "  $r"; done
+  echo "Quote topics:"
+  for r in $roots; do for f in "$r"/quotes/*.txt; do [ -f "$f" ] && echo "$f"; done; done |
+    while read -r f; do awk 'FNR == 1 || $0 == "%" { n++ } END { t = FILENAME; sub(/.*\//, "", t); sub(/\.txt$/, "", t); print t, n }' "$f"; done |
+    awk '{ n[$1] += $2; total += $2 } END { for (t in n) printf "  %-14s %4d\n", t, n[t] | "sort"; close("sort"); printf "  %-14s %4d\n", "total", total }'
+  echo "Graphics by flavor:"
+  for kind in art pixel braille images; do
+    n=0
+    for r in $roots; do
+      for f in "$r/graphics/$kind"/*; do [ -f "$f" ] && n=$((n + 1)); done
+    done
+    case $kind in
+      images) note="real images through $imager"; [ "$imager" = none ] && note="needs chafa, iTerm2 or WezTerm; falls back to pixel" ;;
+      *) note='' ;;
+    esac
+    printf '  %-14s %4d%s\n' "${kind%s}" "$n" "${note:+  $note}"
+  done
+  unset IFS
+  exit 0
 fi
 
 count=0 uptime='' disk=0
