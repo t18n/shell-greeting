@@ -108,7 +108,7 @@ Existing `fortune` files use this format, so you can paste their contents in. If
 
 ### Graphics
 
-Each graphic is a plain `.txt` file in `graphics/`, printed exactly as you draw it, right under the bubble. Start with two `\` lines, so the bubble's tail leads into your drawing:
+Each graphic is a plain `.txt` file in `graphics/art/`, printed exactly as you draw it, right under the bubble. Start with two `\` lines, so the bubble's tail leads into your drawing:
 
 ```
   \
@@ -119,13 +119,13 @@ Each graphic is a plain `.txt` file in `graphics/`, printed exactly as you draw 
 To preview a graphic, pass it as an argument. With one or more graphic files as arguments, the script picks only from those:
 
 ```sh
-~/.local/share/shell-greeting/greeting ~/.local/share/shell-greeting/graphics/owl.txt
+~/.local/share/shell-greeting/greeting ~/.local/share/shell-greeting/graphics/art/owl.txt
 ```
 
 If you have cowsay installed, you can convert a `.cow` file from another collection by rendering it once and dropping the three bubble lines:
 
 ```sh
-cowsay -f some.cow x | tail -n +4 > ~/.local/share/shell-greeting/graphics/some.txt
+cowsay -f some.cow x | tail -n +4 > ~/.local/share/shell-greeting/graphics/art/some.txt
 ```
 
 ### With an AI agent

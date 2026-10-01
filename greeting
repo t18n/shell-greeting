@@ -1,5 +1,5 @@
 #!/bin/sh
-# Random quote from quotes.txt spoken by a random graphic from graphics/, in rainbow colors.
+# Random quote from quotes.txt spoken by a random graphic from graphics/art/, in rainbow colors.
 # Only POSIX sh and awk, so any shell on macOS, Linux, BSD or WSL can run it.
 
 dir=$(cd "$(dirname "$0")" && pwd)
@@ -7,7 +7,7 @@ seed=$(od -An -N4 -tu4 /dev/urandom | tr -d ' ')
 read -r today hour weekday <<EOF
 $(date '+%Y%m%d %H %u')
 EOF
-g=$dir/graphics
+g=$dir/graphics/art
 
 if [ $# -eq 0 ]; then
   case ${today#????} in

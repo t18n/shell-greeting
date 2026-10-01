@@ -1,6 +1,6 @@
 ---
 name: generate-graphics
-description: Draws new original ASCII graphics for the graphics/ folder from topics or instructions. Use when asked to add, draw, generate, or redraw graphics, characters, animals, or cows in shell-greeting.
+description: Draws new original ASCII graphics for the graphics/art/ folder from topics or instructions. Use when asked to add, draw, generate, or redraw graphics, characters, animals, or cows in shell-greeting.
 argument-hint: <topics or instructions>
 ---
 
@@ -12,13 +12,13 @@ If the line above shows a literal `$ARGUMENTS`, the request is the user's messag
 
 ## Steps
 
-1. List `graphics/` and read `graphics/robot.txt`, `graphics/owl.txt` and `graphics/snail.txt` for size and style. Each new graphic gets a name not already in `graphics/`.
+1. List `graphics/art/` and read `graphics/art/robot.txt`, `graphics/art/owl.txt` and `graphics/art/snail.txt` for size and style. Each new graphic gets a name not already in `graphics/art/`.
 2. Draw one graphic per topic in the request, following **Format** and **Originality**.
-3. Save each as `graphics/<kebab-case-name>.txt`.
+3. Save each as `graphics/art/<kebab-case-name>.txt`.
 4. Render each one and look at it as a picture:
 
    ```sh
-   ./greeting graphics/<name>.txt | awk '{ gsub(/\033\[[0-9;]*m/, ""); print }'
+   ./greeting graphics/art/<name>.txt | awk '{ gsub(/\033\[[0-9;]*m/, ""); print }'
    ```
 
    The graphic is done when the subject is recognizable at a glance, symmetric parts line up column for column, and the two `\` lines lead from the bubble into the drawing. Redraw until all three hold.
@@ -46,13 +46,13 @@ Run from the repository root, passing every new file. Each check passes when it 
 ASCII only:
 
 ```sh
-LC_ALL=C grep -n '[^ -~]' graphics/<name>.txt
+LC_ALL=C grep -n '[^ -~]' graphics/art/<name>.txt
 ```
 
 Size:
 
 ```sh
-awk 'length > 30 { print FILENAME ":" FNR ": " length " columns" } FNR == 9 { print FILENAME ": more than 8 lines" }' graphics/<name>.txt
+awk 'length > 30 { print FILENAME ":" FNR ": " length " columns" } FNR == 9 { print FILENAME ": more than 8 lines" }' graphics/art/<name>.txt
 ```
 
-The new total for `README.md` is `ls graphics/*.txt | wc -l`.
+The new total for `README.md` is `ls graphics/art/*.txt | wc -l`.
