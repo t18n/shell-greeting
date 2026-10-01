@@ -1,0 +1,27 @@
+#!/bin/sh
+# Converts an image into a pixel-art file for graphics/pixel/, printed to stdout.
+# Usage: tools/png-to-pixel image.png [max-width] [max-height] > graphics/pixel/name.txt
+# Needs ImageMagick. Transparent pixels (alpha under 50%) become ".". The image is shrunk to
+# fit (default 24x16 pixels, which shows as 24 columns by 8 rows) and reduced to 16 colors.
+
+[ -f "$1" ] || { echo "usage: $0 image.png [max-width] [max-height]" >&2; exit 1; }
+command -v magick >/dev/null || { echo "$0: ImageMagick (magick) is required" >&2; exit 1; }
+
+magick "$1" -alpha on -filter box -resize "${2:-24}x${3:-16}>" +dither -colors 16 -depth 8 txt:- | awk '
+NR == 1 { next }
+{
+  split($1, xy, /[,:]/); x = xy[1]; y = xy[2]
+  if (x + 1 > w) w = x + 1
+  if (y + 1 > h) h = y + 1
+  hex = tolower(substr($3, 2, 6)); alpha = length($3) == 9 ? substr($3, 8, 2) : "ff"
+  if (alpha ~ /^[0-7]/) { grid[x, y] = "."; next }
+  if (!(hex in letter)) { letter[hex] = substr(SYMBOLS, ++n, 1); order[n] = hex }
+  grid[x, y] = letter[hex]
+}
+BEGIN { SYMBOLS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789" }
+END {
+  print ". transparent"
+  for (i = 1; i <= n; i++) print letter[order[i]] " #" order[i]
+  print "---"
+  for (y = 0; y < h; y++) { row = ""; for (x = 0; x < w; x++) row = row grid[x, y]; print row }
+}'

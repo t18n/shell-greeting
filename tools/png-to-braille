@@ -1,0 +1,36 @@
+#!/bin/sh
+# Converts an image into braille art for graphics/braille/, printed to stdout.
+# Usage: tools/png-to-braille image.png [max-width] [max-height] > graphics/braille/name.txt
+# Needs ImageMagick. Dark pixels become dots (transparency counts as white). Each braille
+# character holds 2x4 dots; the default fit of 60x32 dots shows as 30 columns by 8 rows.
+
+[ -f "$1" ] || { echo "usage: $0 image.png [max-width] [max-height]" >&2; exit 1; }
+command -v magick >/dev/null || { echo "$0: ImageMagick (magick) is required" >&2; exit 1; }
+
+# awk writes each braille character as octal escapes (\342\240\201), which printf turns into
+# UTF-8 bytes. That keeps the awk part portable: no awk has to know about UTF-8.
+magick "$1" -background white -alpha remove -alpha off -resize "${2:-60}x${3:-32}>" \
+  -colorspace gray -threshold 50% -depth 8 txt:- | awk '
+NR == 1 { next }
+{
+  split($1, xy, /[,:]/); x = xy[1]; y = xy[2]
+  if (x + 1 > w) w = x + 1
+  if (y + 1 > h) h = y + 1
+  if ($3 ~ /^#000000/) dot[x, y] = 1
+}
+END {
+  split("1 2 4 64 8 16 32 128", bit, " ")
+  for (cy = 0; cy < h; cy += 4) {
+    line = ""
+    for (cx = 0; cx < w; cx += 2) {
+      bits = 0
+      for (dy = 0; dy < 4; dy++) {
+        if (dot[cx, cy + dy]) bits += bit[dy + 1]
+        if (dot[cx + 1, cy + dy]) bits += bit[dy + 5]
+      }
+      line = line (bits ? sprintf("\\342\\%o\\%o", 160 + int(bits / 64), 128 + bits % 64) : " ")
+    }
+    sub(/ +$/, "", line)
+    print line
+  }
+}' | while IFS= read -r line; do printf "$line\n"; done
