@@ -109,6 +109,7 @@ Set any of these variables in your shell's startup file, before the line that ru
 | --- | --- | --- |
 | `GREETING_FLAVOR` | `random` | `art`, `pixel`, `braille`, `image` or `random` |
 | `GREETING_WEIGHTS` | `art:4 pixel:3 braille:2 image:1` | How often each flavor comes up in `random`. A flavor left out, or set to `0`, never shows. |
+| `GREETING_TOPICS` | all topics | Quote topics to use, separated by spaces or commas: `programming`, `innovation`, `business`, `startups`, `science`, `wisdom`, `humor`, plus any file you add to `quotes/` |
 | `GREETING_NAME` | your login name | The name in the time-of-day greeting |
 | `GREETING_HELLO` | `on` | `off` hides the time-of-day greeting |
 | `GREETING_FACTS` | `on` | `off` hides the fact line. It also stops the terminal counter, so nothing is written to disk. |
@@ -123,6 +124,7 @@ For example, in zsh, bash, sh or ksh:
 export GREETING_FLAVOR=random
 export GREETING_WEIGHTS="pixel:3 image:2 art:1"
 export GREETING_NAME="Sam"
+export GREETING_TOPICS="programming startups humor"
 export GREETING_SHINY=20
 ```
 

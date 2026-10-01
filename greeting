@@ -20,9 +20,16 @@ esac
   "$g"/images/*.png "$g"/images/*.jpg "$g"/images/*.jpeg
 
 # The quote files go first in the argument list; awk gets their count to tell them apart.
+# GREETING_TOPICS keeps only the named topic files; if none of them exists, every topic is used.
+topics=$(printf '%s' "$GREETING_TOPICS" | tr ',' ' ')
 nq=0
-for f in "$dir"/quotes/*.txt; do nq=$((nq + 1)); done
-set -- "$dir"/quotes/*.txt "$@"
+for f in "$dir"/quotes/*.txt; do
+  t=${f##*/}
+  case " $topics " in "  " | *" ${t%.txt} "*) set -- "$f" "$@"; nq=$((nq + 1)) ;; esac
+done
+if [ "$nq" -eq 0 ]; then
+  for f in "$dir"/quotes/*.txt; do set -- "$f" "$@"; nq=$((nq + 1)); done
+fi
 
 # Real images need chafa, or a terminal that shows images itself (iTerm2, WezTerm).
 imager=none
