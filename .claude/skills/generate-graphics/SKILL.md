@@ -17,7 +17,7 @@ If the line above shows a literal `$ARGUMENTS`, the request is the user's messag
 3. Render each one and look at it as a picture:
 
    ```sh
-   ./greeting graphics/<flavor-folder>/<name>.<ext> | awk '{ gsub(/\033\[[0-9;?]*[a-zA-Z]/, ""); print }'
+   ./greeting --force graphics/<flavor-folder>/<name>.<ext> | awk '{ gsub(/\033\[[0-9;?]*[a-zA-Z]/, ""); print }'
    ```
 
    For `pixel` and `image`, also view a PNG preview with your image viewer (see the flavor sections), because stripped terminal output hides colors. The graphic is done when the subject is recognizable at a glance and symmetric parts line up. Redraw until it is.

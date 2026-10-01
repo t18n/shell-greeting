@@ -21,6 +21,7 @@ are the only ones it picks from; their folder decides the flavor.
 Options:
   -f, --flavor NAME   art, pixel, braille, image or random
   -l, --list          show content folders, quote topics and graphics, then exit
+      --force         print even when the output is not a terminal
   -h, --help          show this help
   -V, --version       show the version
 
@@ -28,7 +29,7 @@ Settings are GREETING_* environment variables; see "Configuration" in the README
 HELP
 }
 
-flavor=${GREETING_FLAVOR:-random} list=''
+flavor=${GREETING_FLAVOR:-random} list='' force=''
 while [ $# -gt 0 ]; do
   case $1 in
     -f | --flavor)
@@ -36,6 +37,7 @@ while [ $# -gt 0 ]; do
       flavor=$2; shift 2 ;;
     --flavor=*) flavor=${1#--flavor=}; shift ;;
     -l | --list) list=1; shift ;;
+    --force) force=1; shift ;;
     -h | --help) usage; exit 0 ;;
     -V | --version) echo "shell-greeting $VERSION"; exit 0 ;;
     --) shift; break ;;
@@ -43,6 +45,10 @@ while [ $# -gt 0 ]; do
     *) break ;;
   esac
 done
+
+# Stay quiet when the output is not a terminal, so scp, rsync or "ssh host command" never get a
+# greeting mixed into their output.
+[ -t 1 ] || [ -n "$force$list" ] || exit 0
 
 # Content comes from this folder plus each folder in GREETING_DIRS (separated by ":"), which
 # defaults to ~/.config/shell-greeting. Every folder has the same layout: quotes/ and graphics/.

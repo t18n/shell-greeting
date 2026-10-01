@@ -93,6 +93,8 @@ case $- in *i*) ~/.local/share/shell-greeting/greeting ;; esac
 
 The `case` check makes sure the greeting only prints in interactive shells, not when a script or `scp` starts a shell.
 
+The script also stays quiet on its own when its output isn't a terminal, so `scp`, `rsync` and `ssh host command` never get a greeting mixed into their output. To print anyway, for example into a file or a pipe, add `--force`.
+
 **Any shell, on demand:** add an alias so you can type `greeting` whenever you want another one:
 
 ```sh

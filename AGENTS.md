@@ -24,15 +24,15 @@ Every addition to `quotes/` or `graphics/` goes through its skill, including one
 # Preview one graphic; the flavor comes from its folder
 ./greeting graphics/pixel/cat.txt
 
-# Output without colors or cursor codes
-./greeting | awk '{ gsub(/\033\[[0-9;?]*[a-zA-Z]/, ""); print }'
+# Piped output needs --force (the script stays quiet without a terminal); this strips colors
+./greeting --force | awk '{ gsub(/\033\[[0-9;?]*[a-zA-Z]/, ""); print }'
 
 # Convert a picture (needs ImageMagick)
 tools/png-to-pixel picture.png > graphics/pixel/name.txt
 tools/png-to-braille drawing.png > graphics/braille/name.txt
 
 # Run every flavor in every installed shell
-for s in sh bash dash ksh zsh; do for f in art pixel braille image; do command -v $s >/dev/null && $s -c "./greeting --flavor $f" >/dev/null && echo "$s $f ok"; done; done
+for s in sh bash dash ksh zsh; do for f in art pixel braille image; do command -v $s >/dev/null && $s -c "./greeting --force --flavor $f" >/dev/null && echo "$s $f ok"; done; done
 ```
 
 ## Key Conventions
