@@ -119,6 +119,7 @@ Set any of these variables in your shell's startup file, before the line that ru
 | `GREETING_SHINY` | `50` | A shiny greeting comes up 1 time in this many. `0` turns it off, `1` makes every greeting shiny. |
 | `GREETING_HOLIDAYS` | `on` | `off` turns off the Halloween and Christmas characters |
 | `GREETING_NIGHT` | `on` | `off` turns off the late-night nudge |
+| `GREETING_EVERY` | no limit | Show at most one greeting in this time, such as `30m`, `1h` or `1d`, so opening ten tmux panes doesn't give ten greetings. `--force` always shows one. |
 | `GREETING_IMAGE_SIZE` | `24x12` | Size of real images, in columns by rows |
 
 For example, in zsh, bash, sh or ksh:
@@ -150,7 +151,7 @@ For a single run, pass the flavor as an option instead. It wins over `GREETING_F
 
 ### What it reads about your computer
 
-Everything stays on your machine, and nothing is sent anywhere. For the fact line, the script runs `date`, `uptime` and `df` (for your home folder's disk), and it never reads your shell history. The only thing it writes is `~/.local/state/shell-greeting/count` (or under `$XDG_STATE_HOME` if you set it). That file holds one line, today's date and how many terminals you've opened today. If the folder isn't writable, the count is skipped. With `GREETING_FACTS=off`, it doesn't run `uptime` or `df` and writes nothing.
+Everything stays on your machine, and nothing is sent anywhere. For the fact line, the script runs `date`, `uptime` and `df` (for your home folder's disk), and it never reads your shell history. The only thing it writes is `~/.local/state/shell-greeting/count` (or under `$XDG_STATE_HOME` if you set it). That file holds one line, today's date and how many terminals you've opened today. With `GREETING_EVERY` set, it also keeps the time of the last greeting in `last` next to it. If the folder isn't writable, the count is skipped. With `GREETING_FACTS=off`, it doesn't run `uptime` or `df` and writes nothing.
 
 ### Colors
 

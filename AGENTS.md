@@ -41,6 +41,6 @@ for s in sh bash dash ksh zsh; do for f in art pixel braille image; do command -
 - Unicode output (box lines, half blocks) is written as octal byte escapes in the awk program, never as literal characters, and is only colored a whole line at a time, so no awk splits a multibyte character.
 - `quotes/`, `graphics/art/` and `graphics/pixel/` are printable ASCII only: some awk versions count bytes, so a multibyte character shifts the bubble's right edge. `graphics/braille/` holds only braille characters and spaces.
 - `README.md` states how many quotes and graphics each flavor has, in the Features table and the AI attribution line; keep the counts current.
-- Personal facts come only from `date`, `uptime`, `df` and the counter file in `~/.local/state/shell-greeting/`; the script reads no shell history and sends nothing over the network.
+- Personal facts come only from `date`, `uptime`, `df` and the `count` and `last` files in `~/.local/state/shell-greeting/`; the script reads no shell history and sends nothing over the network.
 - The awk program sits inside single quotes, so its messages are written without apostrophes ("It is Friday").
 - `greeting` picks holiday graphics by file name in any flavor (ghost, skeleton, vampire, mummy, witch, zombie, werewolf, pumpkin, santa, snowman, elf); renaming one of those files means updating its holiday list too.
