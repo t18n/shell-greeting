@@ -1,0 +1,21 @@
+. transparent
+k #1b1d29
+b #f1ead8
+s #c9bfa6
+---
+....kkkkkkkk....
+...kbbbbbbbbk...
+..kbbbbbbbbbbk..
+..kbkkbbbbkkbk..
+..kbkkbbbbkkbk..
+..ksbbbkkbbbsk..
+...kbsbssbsbk...
+.kkkkkkbbkkkkkk.
+.kbbbbbbbbbbbbk.
+.kbkkbbbbbbkkbk.
+.kbk..kbbk..kbk.
+.kbkkbbbbbbkkbk.
+.kbk..kbbk..kbk.
+.kbkksbbbbskkbk.
+..k.kbk..kbk.k..
+...kbbk..kbbk...

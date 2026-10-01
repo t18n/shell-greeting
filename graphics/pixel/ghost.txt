@@ -1,0 +1,22 @@
+. transparent
+k #2b2f45
+w #f4f6ff
+s #c3cbe6
+p #ff9eb8
+---
+......kkkk......
+....kkwwwwkk....
+...kwwwwwwwwk...
+..kwwwwwwwwwsk..
+..kwwwwwwwwwsk..
+..kwwkwwwwkwsk..
+..kwwkwwwwkwsk..
+..kwpwwwwwwpsk..
+.kkwwwwkkwwwskk.
+kwwwwwwkkwwwwssk
+.kkwwwwwwwwwskk.
+..kwwwwwwwwwsk..
+..kwwwwwwwwssk..
+..kwwwwwwwsssk..
+..kwwskwskwssk..
+...kkk.kk.kkk...

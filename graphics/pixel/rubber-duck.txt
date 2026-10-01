@@ -1,0 +1,24 @@
+. transparent
+k #3a2a10
+Y #fff3a0
+y #ffd23b
+o #e0a020
+b #ff8a1f
+B #d4600f
+---
+................
+.....kkkk.......
+....kYYyyk......
+...kYyyyyyk.....
+.kkkYykyyyk.....
+kbbbyykyyok.....
+kBBByyyyyok...k.
+.kkkyyyyyok..kyk
+..kyyyyyyyokkyyk
+.kyyyyyyyyyyyyok
+kyyyyyooooyyyyok
+kyyyyoYYYYoyyyok
+kyyyyyooooyyyyok
+koyyyyyyyyyyyook
+.kooooooooooook.
+..kkkkkkkkkkkk..

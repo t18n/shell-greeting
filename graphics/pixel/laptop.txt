@@ -1,0 +1,29 @@
+. transparent
+k #1a1d24
+g #4a5060
+s #0f1e2e
+G #6be36b
+c #5fd7f2
+p #ff7ab6
+y #ffd23f
+w #e8edf2
+l #c9ced6
+m #8a93a0
+d #5b6270
+---
+.kkkkkkkkkkkkkk.
+.kggggggggggggk.
+.kgssssssssssgk.
+.kgsGGsyyyyssgk.
+.kgssssssssssgk.
+.kgsscccsppssgk.
+.kgssssssssssgk.
+.kgsGswssssssgk.
+.kgssssssssssgk.
+.kggggggggggggk.
+kkkkkkkkkkkkkkkk
+kldldldldldldllk
+klldldldldldldlk
+kllllllddllllllk
+kmmmmmmmmmmmmmmk
+.kkkkkkkkkkkkkk.
