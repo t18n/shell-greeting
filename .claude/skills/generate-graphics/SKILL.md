@@ -21,7 +21,7 @@ If the line above shows a literal `$ARGUMENTS`, the request is the user's messag
    ```
 
    For `pixel` and `image`, also view a PNG preview with your image viewer (see the flavor sections), because stripped terminal output hides colors. The graphic is done when the subject is recognizable at a glance and symmetric parts line up. Redraw until it is.
-4. Run that flavor's **Check** until it passes.
+4. Run that flavor's **Check** until it passes, then `sh tests/check-content.sh`, which must end with `content ok`.
 5. In `README.md`, update that flavor's count in the Features table, and the per-flavor and total counts in the "AI attribution" line. That line names the AI model that drew the graphics; if you are a different model, name both.
 6. Report the new files and show each rendered graphic.
 

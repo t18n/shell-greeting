@@ -1,0 +1,50 @@
+name: test
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  test:
+    name: ${{ matrix.os }} / ${{ matrix.awk }}${{ matrix.chafa && ' / chafa' || '' }}
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { os: ubuntu-latest, awk: gawk, chafa: true }
+          - { os: ubuntu-latest, awk: mawk, chafa: true }
+          - { os: ubuntu-latest, awk: original-awk, chafa: true }
+          # BusyBox without chafa also covers the image flavor falling back to pixel art
+          - { os: ubuntu-latest, awk: busybox, chafa: false }
+          - { os: macos-latest, awk: system, chafa: true }
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install shells and awk (Linux)
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y dash ksh zsh fish busybox gawk mawk original-awk
+          if [ "${{ matrix.chafa }}" = true ]; then sudo apt-get install -y chafa; fi
+
+      - name: Install chafa (macOS)
+        if: runner.os == 'macOS'
+        run: brew install chafa
+
+      - name: Put the matrix awk first on PATH
+        run: |
+          mkdir -p "$RUNNER_TEMP/bin"
+          case "${{ matrix.awk }}" in
+            system) ;;
+            busybox) printf '#!/bin/sh\nexec busybox awk "$@"\n' > "$RUNNER_TEMP/bin/awk" ;;
+            *) ln -s "$(command -v "${{ matrix.awk }}")" "$RUNNER_TEMP/bin/awk" ;;
+          esac
+          [ -e "$RUNNER_TEMP/bin/awk" ] && chmod +x "$RUNNER_TEMP/bin/awk"
+          echo "$RUNNER_TEMP/bin" >> "$GITHUB_PATH"
+
+      - name: Check content
+        run: sh tests/check-content.sh
+
+      - name: Run the greeting tests
+        run: sh tests/run.sh

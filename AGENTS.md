@@ -31,6 +31,10 @@ Every addition to `quotes/` or `graphics/` goes through its skill, including one
 tools/png-to-pixel picture.png > graphics/pixel/name.txt
 tools/png-to-braille drawing.png > graphics/braille/name.txt
 
+# Tests: content rules, then behavior in every installed shell (CI runs both per awk)
+sh tests/check-content.sh
+sh tests/run.sh
+
 # Run every flavor in every installed shell
 for s in sh bash dash ksh zsh; do for f in art pixel braille image; do command -v $s >/dev/null && $s -c "./greeting --force --flavor $f" >/dev/null && echo "$s $f ok"; done; done
 ```
