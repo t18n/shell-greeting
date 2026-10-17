@@ -111,7 +111,7 @@ Set any of these variables in your shell's startup file, before the line that ru
 | --- | --- | --- |
 | `GREETING_FLAVOR` | `random` | `art`, `pixel`, `braille`, `image` or `random` |
 | `GREETING_WEIGHTS` | `art:4 pixel:3 braille:2 image:1` | How often each flavor comes up in `random`. A flavor left out, or set to `0`, never shows. |
-| `GREETING_TOPICS` | all topics | Quote topics to use, separated by spaces or commas: `programming`, `innovation`, `business`, `startups`, `science`, `wisdom`, `humor`, plus any file you add to `quotes/` |
+| `GREETING_TOPICS` | all topics | Quote topics to use, separated by spaces or commas: `programming`, `innovation`, `business`, `startups`, `science`, `wisdom`, `humor`, plus any file you add to `quotes/`. `--topic` (or `-t`) picks topics for one run. |
 | `GREETING_DIRS` | `~/.config/shell-greeting` | Your own content folders, separated by `:` (see [Your own content](#your-own-content)). Set it empty to use only the bundled content. |
 | `GREETING_NAME` | your login name | The name in the time-of-day greeting |
 | `GREETING_HELLO` | `on` | `off` hides the time-of-day greeting |
@@ -139,10 +139,11 @@ set -gx GREETING_FLAVOR pixel
 set -gx GREETING_SHINY 0
 ```
 
-For a single run, pass the flavor as an option instead. It wins over `GREETING_FLAVOR`:
+For a single run, pass the flavor or topics as an option instead. They win over `GREETING_FLAVOR` and `GREETING_TOPICS`:
 
 ```sh
 ~/.local/share/shell-greeting/greeting --flavor braille
+~/.local/share/shell-greeting/greeting --topic humor
 ```
 
 `--list` shows which content folders, quote topics and graphics the script finds, and whether real images can be shown in this terminal. `--help` lists every option, and `--version` shows the version.

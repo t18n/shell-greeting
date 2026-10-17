@@ -66,9 +66,24 @@ humor=$(grep '^    -- ' quotes/humor.txt | sed 's/^    -- //' | sort -u)
 authors=$(for i in 1 2 3 4 5 6 7 8; do GREETING_TOPICS=humor ./greeting --force --flavor art | plain | sed -n 's/^[|\\] *-- \(.*[^ ]\) *[|/]$/\1/p'; done | sort -u)
 check "GREETING_TOPICS keeps only that topic" '[ -n "$authors" ] && [ -z "$(printf "%s\n" "$authors" | grep -vxF "$humor")" ]'
 
+science=$(grep '^    -- ' quotes/science.txt | sed 's/^    -- //' | sort -u)
+sample() { for i in 1 2 3 4 5 6 7 8; do "$@" | plain | sed -n 's/^[|\\] *-- \(.*[^ ]\) *[|/]$/\1/p'; done | sort -u; }
+only() { [ -n "$1" ] && [ -z "$(printf "%s\n" "$1" | grep -vxF "$2")" ]; }
+check "-t keeps only that topic" 'only "$(sample ./greeting --force --flavor art -t humor)" "$humor"'
+check "--topic=a,b keeps only those topics" 'only "$(sample ./greeting --force --flavor art --topic=nonsense,science)" "$science"'
+check "--topic takes a space-separated list" 'only "$(sample ./greeting --force --flavor art --topic "nonsense science")" "$science"'
+check "--topic replaces GREETING_TOPICS" 'only "$(sample env GREETING_TOPICS=humor ./greeting --force --flavor art --topic science)" "$science"'
+check "--topic without a name exits 2" './greeting --topic 2>/dev/null; [ $? -eq 2 ]'
+check "--topic without a name says so" '[ "$(./greeting --topic 2>&1 >/dev/null)" = "greeting: --topic needs a topic name (try --help)" ]'
+check "--topic with an unknown name still greets" '[ -n "$(sample ./greeting --force --flavor art --topic nonsense 2> "$tmp/err")" ] && [ ! -s "$tmp/err" ]'
+check "-t without a name exits 2" './greeting -t 2>/dev/null; [ $? -eq 2 ]'
+check "-t without a name says so" '[ "$(./greeting -t 2>&1 >/dev/null)" = "greeting: -t needs a topic name (try --help)" ]'
+check "--help lists --topic" './greeting --help | grep -q "^  -t, --topic NAMES  "'
+
 mkdir -p "$XDG_CONFIG_HOME/shell-greeting/quotes" "$XDG_CONFIG_HOME/shell-greeting/graphics/art"
 printf 'A quote from my own folder.\n    -- Me\n' > "$XDG_CONFIG_HOME/shell-greeting/quotes/mine.txt"
 check "own folder quotes are used" 'GREETING_TOPICS=mine ./greeting --force | plain | grep -q "my own folder"'
+check "--topic picks an own folder topic" './greeting --force --topic mine | plain | grep -q "my own folder"'
 check "GREETING_DIRS= turns own folders off" '! GREETING_DIRS= GREETING_TOPICS=mine ./greeting --force | plain | grep -q "my own folder"'
 
 # GREETING_EVERY only applies without --force, which needs a terminal; a copy without the

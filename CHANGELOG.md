@@ -1,5 +1,9 @@
 # Changelog
 
+## Unreleased
+
+- `-t, --topic NAMES` picks quote topics for one run, using the same names and separators as `GREETING_TOPICS`, which it replaces for that run.
+
 ## 1.0.0 - 2026-10-01
 
 The first release.

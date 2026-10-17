@@ -20,6 +20,7 @@ are the only ones it picks from; their folder decides the flavor.
 
 Options:
   -f, --flavor NAME   art, pixel, braille, image or random
+  -t, --topic NAMES   only quotes from these topics, like GREETING_TOPICS
   -l, --list          show content folders, quote topics and graphics, then exit
       --force         print even when the output is not a terminal
   -h, --help          show this help
@@ -36,6 +37,10 @@ while [ $# -gt 0 ]; do
       [ $# -ge 2 ] || { echo "greeting: $1 needs a flavor name (try --help)" >&2; exit 2; }
       flavor=$2; shift 2 ;;
     --flavor=*) flavor=${1#--flavor=}; shift ;;
+    -t | --topic)
+      [ $# -ge 2 ] || { echo "greeting: $1 needs a topic name (try --help)" >&2; exit 2; }
+      GREETING_TOPICS=$2; shift 2 ;;
+    --topic=*) GREETING_TOPICS=${1#--topic=}; shift ;;
     -l | --list) list=1; shift ;;
     --force) force=1; shift ;;
     -h | --help) usage; exit 0 ;;
